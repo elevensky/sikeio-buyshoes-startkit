@@ -14,7 +14,7 @@ server:
 
 .PHONY: all
 all:
-  (make css & make js & make server & wait)
+	(make css & make js & make server & wait)
 
 .PHONY: clean
 clean:
