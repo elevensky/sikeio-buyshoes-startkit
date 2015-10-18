@@ -15,8 +15,10 @@ Products
 */
 let QuantityControl = React.createClass({
   render:function() {
+    let quantity = this.props.item;
+    let variant = this.props.variant;
     return (
-      <div className="adjust-qty">
+      <div className={"adjust-qty adjust-qty--"+variant}>
         <a className="adjust-qty__button">-</a>
         <div className="adjust-qty__number">{quantity}</div>
         <a className="adjust-qty__button">+</a>
@@ -26,8 +28,16 @@ let QuantityControl = React.createClass({
 });
 
 let Product = React.createClass({
+  getcartnum:function() {
+    let item  = this.props.item;
+    if(item > 0) {
+      return (<QuantityControl item={item} variant="gray"/>);
+    } else {
+      return (<a className="product__add"><img className="product__add__icon" src="img/cart-icon.svg"/></a>);
+    }
+  },
   render:function() {
-    let { name, price, imagePath, quantity} = this.props.product;
+    let { name, price, imagePath } = this.props.product;
     return (
       <div className="product">
         <div className="product__display">
@@ -35,9 +45,7 @@ let Product = React.createClass({
             <img className="product__img" src={imagePath}/>
           </div>
 
-          <a className="product__add">
-            <img className="product__add__icon" src="img/cart-icon.svg"/>
-          </a>
+          {this.getcartnum()}
 
           <div className="product__price">
             {"$"+price}
@@ -58,10 +66,16 @@ let Product = React.createClass({
 let Products = React.createClass({
   render: function() {
     let products = this.props.products;
+    let cartItems = this.props.cartitems;
     let productsList = [];
     for(let key in products) {
       if(products.hasOwnProperty(key)) {
-        productsList.push(<Product key={products[key].id} product={products[key]}/>);
+        for(let ckey in cartItems) {
+          if(ckey === key) {
+            products[key].quantity = cartItems[ckey].quantity;
+          }
+        }
+        productsList.push(<Product key={products[key].id} product={products[key]} item={products[key].quantity}/>);
       }
     }
     return (
@@ -158,6 +172,14 @@ let Checkoutcoupon = React.createClass({
 
 let Checkout = React.createClass({
   render: function() {
+    let cartitems = this.props.cartitems;
+    let subtotal = 0;
+    for(let key in cartitems) {
+      if(cartitems.hasOwnProperty(key)) {
+        subtotal += cartitems[key].price*cartitems[key].quantity;
+      }
+    }
+    subtotal = "$" + subtotal;
     return (
       <div>
         <Checkoutcoupon/>
@@ -168,7 +190,7 @@ let Checkout = React.createClass({
 
         <div className="checkout__line">
           <div className="checkout__line__label"> Subtotal</div>
-          <div className="checkout__line__amount checkout__line__amount--strikeout"> $450 </div>
+          <div className="checkout__line__amount checkout__line__amount--strikeout"> {subtotal} </div>
         </div>
 
         <div className="checkout__line">
@@ -324,13 +346,13 @@ let App = React.createClass({
           </div>
 
           <div className="site__content">
-            <Products products={products}/>
+            <Products products={products} cartitems={cartItems}/>
           </div>
         </div>
 
         <div className="site__right-sidebar">
           <Cart cartitems={cartItems}/>
-          <Checkout/>
+          <Checkout cartitems={cartItems}/>
         </div>
         <Siderbar/>
       </div>

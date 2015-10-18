@@ -25,9 +25,11 @@ var QuantityControl = React.createClass({
   displayName: "QuantityControl",
 
   render: function render() {
+    var quantity = this.props.item;
+    var variant = this.props.variant;
     return React.createElement(
       "div",
-      { className: "adjust-qty" },
+      { className: "adjust-qty adjust-qty--" + variant },
       React.createElement(
         "a",
         { className: "adjust-qty__button" },
@@ -50,12 +52,23 @@ var QuantityControl = React.createClass({
 var Product = React.createClass({
   displayName: "Product",
 
+  getcartnum: function getcartnum() {
+    var item = this.props.item;
+    if (item > 0) {
+      return React.createElement(QuantityControl, { item: item, variant: "gray" });
+    } else {
+      return React.createElement(
+        "a",
+        { className: "product__add" },
+        React.createElement("img", { className: "product__add__icon", src: "img/cart-icon.svg" })
+      );
+    }
+  },
   render: function render() {
     var _props$product = this.props.product;
     var name = _props$product.name;
     var price = _props$product.price;
     var imagePath = _props$product.imagePath;
-    var quantity = _props$product.quantity;
 
     return React.createElement(
       "div",
@@ -68,11 +81,7 @@ var Product = React.createClass({
           { className: "product__img-wrapper" },
           React.createElement("img", { className: "product__img", src: imagePath })
         ),
-        React.createElement(
-          "a",
-          { className: "product__add" },
-          React.createElement("img", { className: "product__add__icon", src: "img/cart-icon.svg" })
-        ),
+        this.getcartnum(),
         React.createElement(
           "div",
           { className: "product__price" },
@@ -98,10 +107,16 @@ var Products = React.createClass({
 
   render: function render() {
     var products = this.props.products;
+    var cartItems = this.props.cartitems;
     var productsList = [];
     for (var key in products) {
       if (products.hasOwnProperty(key)) {
-        productsList.push(React.createElement(Product, { key: products[key].id, product: products[key] }));
+        for (var ckey in cartItems) {
+          if (ckey === key) {
+            products[key].quantity = cartItems[ckey].quantity;
+          }
+        }
+        productsList.push(React.createElement(Product, { key: products[key].id, product: products[key], item: products[key].quantity }));
       }
     }
     return React.createElement(
@@ -244,6 +259,14 @@ var Checkout = React.createClass({
   displayName: "Checkout",
 
   render: function render() {
+    var cartitems = this.props.cartitems;
+    var subtotal = 0;
+    for (var key in cartitems) {
+      if (cartitems.hasOwnProperty(key)) {
+        subtotal += cartitems[key].price * cartitems[key].quantity;
+      }
+    }
+    subtotal = "$" + subtotal;
     return React.createElement(
       "div",
       null,
@@ -273,7 +296,9 @@ var Checkout = React.createClass({
         React.createElement(
           "div",
           { className: "checkout__line__amount checkout__line__amount--strikeout" },
-          " $450 "
+          " ",
+          subtotal,
+          " "
         )
       ),
       React.createElement(
@@ -445,14 +470,14 @@ var App = React.createClass({
         React.createElement(
           "div",
           { className: "site__content" },
-          React.createElement(Products, { products: products })
+          React.createElement(Products, { products: products, cartitems: cartItems })
         )
       ),
       React.createElement(
         "div",
         { className: "site__right-sidebar" },
         React.createElement(Cart, { cartitems: cartItems }),
-        React.createElement(Checkout, null)
+        React.createElement(Checkout, { cartitems: cartItems })
       ),
       React.createElement(Siderbar, null)
     );
