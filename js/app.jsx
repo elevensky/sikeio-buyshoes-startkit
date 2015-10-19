@@ -1,3 +1,4 @@
+/*
 let SiteTitle = React.createClass({
   render:function() {
     return (
@@ -13,6 +14,7 @@ Products
 - Product
 - Quantity
 */
+/*
 let QuantityControl = React.createClass({
   render:function() {
     let quantity = this.props.item;
@@ -90,6 +92,7 @@ Cart 组件
 -Carttitle
 -Cartitem
 */
+/*
 let Carttitle = React.createClass({
   render: function() {
     let title = this.props.title ? this.props.title : "Shopping Cart";
@@ -159,6 +162,7 @@ let Cart = React.createClass({
 Checkout component
 -Checkoutcoupon
 */
+/*
 let Checkoutcoupon = React.createClass({
   render: function() {
     return (
@@ -359,6 +363,9 @@ let App = React.createClass({
     );
   }
 });
+*/
+import React from 'react';
+import App from '../components/App';
 
 window.onload = () => {
   // 使用 App 组件替换 `#root` 的 innerHTML。

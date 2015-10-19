@@ -1,18 +1,11 @@
-"use strict";
-
-var SiteTitle = React.createClass({
-  displayName: "SiteTitle",
-
-  render: function render() {
-    return React.createElement(
-      "div",
-      { className: "title" },
-      React.createElement(
-        "h2",
-        null,
-        "Buy Me Shoes"
-      ),
-      React.createElement("img", { className: "title__heart", src: "img/heart.svg" })
+/*
+let SiteTitle = React.createClass({
+  render:function() {
+    return (
+      <div className="title">
+        <h2>Buy Me Shoes</h2>
+        <img className="title__heart" src="img/heart.svg"/>
+      </div>
     );
   }
 });
@@ -21,108 +14,76 @@ Products
 - Product
 - Quantity
 */
-var QuantityControl = React.createClass({
-  displayName: "QuantityControl",
-
-  render: function render() {
-    var quantity = this.props.item;
-    var variant = this.props.variant;
-    return React.createElement(
-      "div",
-      { className: "adjust-qty adjust-qty--" + variant },
-      React.createElement(
-        "a",
-        { className: "adjust-qty__button" },
-        "-"
-      ),
-      React.createElement(
-        "div",
-        { className: "adjust-qty__number" },
-        quantity
-      ),
-      React.createElement(
-        "a",
-        { className: "adjust-qty__button" },
-        "+"
-      )
+/*
+let QuantityControl = React.createClass({
+  render:function() {
+    let quantity = this.props.item;
+    let variant = this.props.variant;
+    return (
+      <div className={"adjust-qty adjust-qty--"+variant}>
+        <a className="adjust-qty__button">-</a>
+        <div className="adjust-qty__number">{quantity}</div>
+        <a className="adjust-qty__button">+</a>
+      </div>
     );
   }
 });
 
-var Product = React.createClass({
-  displayName: "Product",
-
-  getcartnum: function getcartnum() {
-    var item = this.props.item;
-    if (item > 0) {
-      return React.createElement(QuantityControl, { item: item, variant: "gray" });
+let Product = React.createClass({
+  getcartnum:function() {
+    let item  = this.props.item;
+    if(item > 0) {
+      return (<QuantityControl item={item} variant="gray"/>);
     } else {
-      return React.createElement(
-        "a",
-        { className: "product__add" },
-        React.createElement("img", { className: "product__add__icon", src: "img/cart-icon.svg" })
-      );
+      return (<a className="product__add"><img className="product__add__icon" src="img/cart-icon.svg"/></a>);
     }
   },
-  render: function render() {
-    var _props$product = this.props.product;
-    var name = _props$product.name;
-    var price = _props$product.price;
-    var imagePath = _props$product.imagePath;
+  render:function() {
+    let { name, price, imagePath } = this.props.product;
+    return (
+      <div className="product">
+        <div className="product__display">
+          <div className="product__img-wrapper">
+            <img className="product__img" src={imagePath}/>
+          </div>
 
-    return React.createElement(
-      "div",
-      { className: "product" },
-      React.createElement(
-        "div",
-        { className: "product__display" },
-        React.createElement(
-          "div",
-          { className: "product__img-wrapper" },
-          React.createElement("img", { className: "product__img", src: imagePath })
-        ),
-        this.getcartnum(),
-        React.createElement(
-          "div",
-          { className: "product__price" },
-          "$" + price
-        )
-      ),
-      React.createElement(
-        "div",
-        { className: "product__description" },
-        React.createElement(
-          "div",
-          { className: "product__name" },
-          name
-        ),
-        React.createElement("img", { className: "product__heart", src: "img/heart.svg" })
-      )
+          {this.getcartnum()}
+
+          <div className="product__price">
+            {"$"+price}
+          </div>
+        </div>
+
+        <div className="product__description">
+          <div className="product__name">
+            {name}
+          </div>
+          <img className="product__heart" src="img/heart.svg"/>
+        </div>
+      </div>
     );
   }
 });
 
-var Products = React.createClass({
-  displayName: "Products",
-
-  render: function render() {
-    var products = this.props.products;
-    var cartItems = this.props.cartitems;
-    var productsList = [];
-    for (var key in products) {
-      if (products.hasOwnProperty(key)) {
-        for (var ckey in cartItems) {
-          if (ckey === key) {
+let Products = React.createClass({
+  render: function() {
+    let products = this.props.products;
+    let cartItems = this.props.cartitems;
+    let productsList = [];
+    for(let key in products) {
+      if(products.hasOwnProperty(key)) {
+        for(let ckey in cartItems) {
+          if(ckey === key) {
             products[key].quantity = cartItems[ckey].quantity;
           }
         }
-        productsList.push(React.createElement(Product, { key: products[key].id, product: products[key], item: products[key].quantity }));
+        productsList.push(<Product key={products[key].id} product={products[key]} item={products[key].quantity}/>);
       }
     }
-    return React.createElement(
-      "div",
-      { className: "products" },
-      productsList
+    return (
+      <div className="products">
+        {productsList}
+      </div>
     );
   }
 });
@@ -131,109 +92,68 @@ Cart 组件
 -Carttitle
 -Cartitem
 */
-var Carttitle = React.createClass({
-  displayName: "Carttitle",
+/*
+let Carttitle = React.createClass({
+  render: function() {
+    let title = this.props.title ? this.props.title : "Shopping Cart";
+    let extendstyle = this.props.isspacer ? 'cart__title--spacer' : '';
+    return (<h3 className={"cart__title "+extendstyle}>{title}</h3>);
+  }
+});
 
-  render: function render() {
-    var title = this.props.title ? this.props.title : "Shopping Cart";
-    var extendstyle = this.props.isspacer ? 'cart__title--spacer' : '';
-    return React.createElement(
-      "h3",
-      { className: "cart__title " + extendstyle },
-      title
+let Cartitem = React.createClass({
+  render: function() {
+    let {name, price, imagePath, quantity} = this.props.cartitem;
+    return(
+      <div className="cart-item">
+        <div className="cart-item__top-part">
+          <div className="cart-item__image">
+            <img src={imagePath}/>
+          </div>
+          <div className="cart-item__top-part__middle">
+            <div className="cart-item__title">
+              {name}
+            </div>
+            <div className="cart-item__price">
+              {quantity > 1 ? "$"+price+" x "+quantity : "$"+price }
+            </div>
+          </div>
+          <img className="cart-item__trash" src="img/trash-icon.svg"/>
+        </div>
+
+        <div className="cart-item__qty">
+          <div className="adjust-qty">
+            <a className="adjust-qty__button">-</a>
+            <div className="adjust-qty__number">{quantity}</div>
+            <a className="adjust-qty__button">+</a>
+          </div>
+        </div>
+      </div>
     );
   }
 });
 
-var Cartitem = React.createClass({
-  displayName: "Cartitem",
-
-  render: function render() {
-    var _props$cartitem = this.props.cartitem;
-    var name = _props$cartitem.name;
-    var price = _props$cartitem.price;
-    var imagePath = _props$cartitem.imagePath;
-    var quantity = _props$cartitem.quantity;
-
-    return React.createElement(
-      "div",
-      { className: "cart-item" },
-      React.createElement(
-        "div",
-        { className: "cart-item__top-part" },
-        React.createElement(
-          "div",
-          { className: "cart-item__image" },
-          React.createElement("img", { src: imagePath })
-        ),
-        React.createElement(
-          "div",
-          { className: "cart-item__top-part__middle" },
-          React.createElement(
-            "div",
-            { className: "cart-item__title" },
-            name
-          ),
-          React.createElement(
-            "div",
-            { className: "cart-item__price" },
-            quantity > 1 ? "$" + price + " x " + quantity : "$" + price
-          )
-        ),
-        React.createElement("img", { className: "cart-item__trash", src: "img/trash-icon.svg" })
-      ),
-      React.createElement(
-        "div",
-        { className: "cart-item__qty" },
-        React.createElement(
-          "div",
-          { className: "adjust-qty" },
-          React.createElement(
-            "a",
-            { className: "adjust-qty__button" },
-            "-"
-          ),
-          React.createElement(
-            "div",
-            { className: "adjust-qty__number" },
-            quantity
-          ),
-          React.createElement(
-            "a",
-            { className: "adjust-qty__button" },
-            "+"
-          )
-        )
-      )
-    );
-  }
-});
-
-var Cart = React.createClass({
-  displayName: "Cart",
-
-  componentDidMount: function componentDidMount() {
-    var $content = React.findDOMNode(this.refs.content);
+let Cart = React.createClass({
+  componentDidMount() {
+    let $content = React.findDOMNode(this.refs.content);
     Ps.initialize($content);
   },
-  render: function render() {
-    var cartitems = this.props.cartitems;
-    var cartList = [];
-    for (var key in cartitems) {
-      if (cartitems.hasOwnProperty(key)) {
-        cartList.push(React.createElement(Cartitem, { key: cartitems[key].id, cartitem: cartitems[key] }));
+  render: function() {
+    let cartitems = this.props.cartitems;
+    let cartList = [];
+    for(let key in cartitems) {
+      if(cartitems.hasOwnProperty(key)) {
+        cartList.push(<Cartitem key={cartitems[key].id} cartitem={cartitems[key]}/>);
       }
     }
-    return React.createElement(
-      "div",
-      { className: "cart" },
-      React.createElement(Carttitle, null),
-      React.createElement(
-        "div",
-        { ref: "content", className: "cart__content" },
-        React.createElement(Carttitle, { isspacer: "1" }),
-        cartList
-      )
+    return (
+      <div className="cart">
+        <Carttitle/>
+        <div ref="content" className="cart__content">
+          <Carttitle isspacer='1'/>
+          {cartList}
+        </div>
+    </div>
     );
   }
 });
@@ -242,249 +162,221 @@ var Cart = React.createClass({
 Checkout component
 -Checkoutcoupon
 */
-var Checkoutcoupon = React.createClass({
-  displayName: "Checkoutcoupon",
-
-  render: function render() {
-    return React.createElement(
-      "div",
-      null,
-      React.createElement("hr", { className: "checkout__divider" }),
-      React.createElement("input", { type: "text", className: "checkout__coupon-input", placeholder: "coupon code" })
+/*
+let Checkoutcoupon = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <hr className="checkout__divider"/>
+        <input type="text" className="checkout__coupon-input" placeholder="coupon code"></input>
+      </div>
     );
   }
 });
 
-var Checkout = React.createClass({
-  displayName: "Checkout",
-
-  render: function render() {
-    var cartitems = this.props.cartitems;
-    var subtotal = 0;
-    for (var key in cartitems) {
-      if (cartitems.hasOwnProperty(key)) {
-        subtotal += cartitems[key].price * cartitems[key].quantity;
+let Checkout = React.createClass({
+  render: function() {
+    let cartitems = this.props.cartitems;
+    let subtotal = 0;
+    for(let key in cartitems) {
+      if(cartitems.hasOwnProperty(key)) {
+        subtotal += cartitems[key].price*cartitems[key].quantity;
       }
     }
     subtotal = "$" + subtotal;
-    return React.createElement(
-      "div",
-      null,
-      React.createElement(Checkoutcoupon, null),
-      React.createElement(
-        "div",
-        { className: "checkout__line" },
-        React.createElement(
-          "div",
-          { className: "checkout__line__label" },
-          " Discount "
-        ),
-        React.createElement(
-          "div",
-          { className: "checkout__line__amount" },
-          " -$90 "
-        )
-      ),
-      React.createElement(
-        "div",
-        { className: "checkout__line" },
-        React.createElement(
-          "div",
-          { className: "checkout__line__label" },
-          " Subtotal"
-        ),
-        React.createElement(
-          "div",
-          { className: "checkout__line__amount checkout__line__amount--strikeout" },
-          " ",
-          subtotal,
-          " "
-        )
-      ),
-      React.createElement(
-        "div",
-        { className: "checkout__line" },
-        React.createElement(
-          "div",
-          { className: "checkout__line__amount checkout__line__amount--omg-savings" },
-          " $360 "
-        )
-      ),
-      React.createElement(
-        "a",
-        { className: "checkout__button" },
-        React.createElement("img", { className: "checkout__button__icon", src: "img/cart-icon.svg" }),
-        React.createElement(
-          "div",
-          { className: "checkout__button__label" },
-          "Checkout"
-        )
-      )
+    return (
+      <div>
+        <Checkoutcoupon/>
+        <div className="checkout__line">
+          <div className="checkout__line__label"> Discount </div>
+          <div className="checkout__line__amount"> -$90 </div>
+        </div>
+
+        <div className="checkout__line">
+          <div className="checkout__line__label"> Subtotal</div>
+          <div className="checkout__line__amount checkout__line__amount--strikeout"> {subtotal} </div>
+        </div>
+
+        <div className="checkout__line">
+          <div className="checkout__line__amount checkout__line__amount--omg-savings"> $360 </div>
+        </div>
+
+        <a className="checkout__button">
+          <img  className="checkout__button__icon" src="img/cart-icon.svg"/>
+          <div className="checkout__button__label">
+            Checkout
+          </div>
+        </a>
+      </div>
     );
   }
 });
 
-var Siderbar = React.createClass({
-  displayName: "Siderbar",
-
-  render: function render() {
-    return React.createElement(
-      "a",
-      { className: "site__right-sidebar-toggle" },
-      React.createElement("img", { src: "img/arrow-icon.svg" })
+let Siderbar = React.createClass({
+  render: function() {
+    return (
+      <a className="site__right-sidebar-toggle">
+        <img src="img/arrow-icon.svg"/>
+      </a>
     );
   }
 });
 
-var App = React.createClass({
-  displayName: "App",
-
+let App = React.createClass({
   // `render` 方法将生成 `buyshoes` 网页的 Virtual DOM。
-  renderBackground: function renderBackground() {
-    return React.createElement(
-      "div",
-      { className: "bg" },
-      React.createElement("div", { className: "bg__img" })
+  renderBackground: function() {
+    return (
+      <div className="bg">
+        <div className="bg__img">
+        </div>
+      </div>
     );
   },
-  render: function render() {
-    var products = {
+  render:function() {
+    let products = {
       "jameson-vulc": {
-        id: "jameson-vulc",
-        name: "Jameson Vulc",
-        price: 64.99,
-        imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
-        quantity: 1
+          id: "jameson-vulc",
+          name: "Jameson Vulc",
+          price: 64.99,
+          imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
+          quantity: 1,
       },
 
       "marana-x-hook-ups": {
-        id: "marana-x-hook-ups",
-        name: "Marana X Hook-Up",
-        price: 79.99,
-        imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
-        quantity: 2
+          id: "marana-x-hook-ups",
+          name: "Marana X Hook-Up",
+          price: 79.99,
+          imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
+          quantity: 2
       },
 
       "jameson-e-lite": {
-        id: "jameson-e-lite",
-        name: "Jameson E-Lite",
-        price: 69.99,
-        imagePath: "img/shoes/jameson-e-lite-maroon-orig.png",
-        quantity: 0
+          id: "jameson-e-lite",
+          name: "Jameson E-Lite",
+          price: 69.99,
+          imagePath: "img/shoes/jameson-e-lite-maroon-orig.png",
+          quantity: 0,
       },
 
       "jameson-e-lite-julian-davidson-4": {
-        id: "jameson-e-lite-julian-davidson-4",
-        name: "Jameson E-Lite Julian Davidson",
-        price: 74.99,
-        imagePath: "img/shoes/jameson-e-lite-julian-davidson-4-black-gum-orig.png",
-        quantity: 0
+          id: "jameson-e-lite-julian-davidson-4",
+          name: "Jameson E-Lite Julian Davidson",
+          price: 74.99,
+          imagePath: "img/shoes/jameson-e-lite-julian-davidson-4-black-gum-orig.png",
+          quantity: 0,
       },
 
       "scout-womens-6": {
-        id: "scout-womens-6",
-        name: "Scout Women's",
-        imagePath: "img/shoes/scout-womens-6-teal-orig.png",
-        price: 59.99,
-        quantity: 0
+          id: "scout-womens-6",
+          name: "Scout Women's",
+          imagePath: "img/shoes/scout-womens-6-teal-orig.png",
+          price: 59.99,
+          quantity: 0,
       },
 
       "scout-womens-coco-ho-5": {
-        id: "scout-womens-coco-ho-5",
-        name: "Scout Women's Coco Ho",
-        imagePath: "img/shoes/scout-womens-coco-ho-5-olive-white-orig.png",
-        price: 59.99,
-        quantity: 0
+          id: "scout-womens-coco-ho-5",
+          name: "Scout Women's Coco Ho",
+          imagePath: "img/shoes/scout-womens-coco-ho-5-olive-white-orig.png",
+          price: 59.99,
+          quantity: 0,
       },
 
       "jameson-2-womens-8": {
-        id: "jameson-2-womens-8",
-        name: "Jameson 2 Women's",
-        imagePath: "img/shoes/jameson-2-womens-8-black-white-gum-orig.png",
-        price: 59.99,
-        quantity: 0
+          id: "jameson-2-womens-8",
+          name: "Jameson 2 Women's",
+          imagePath: "img/shoes/jameson-2-womens-8-black-white-gum-orig.png",
+          price: 59.99,
+          quantity: 0,
       },
 
       "corby-womens-2": {
-        id: "corby-womens-2",
-        name: "Corby Women's",
-        imagePath: "img/shoes/corby-womens-2-tan-white-orig.png",
-        price: 44.99,
-        quantity: 0
-      }
+          id: "corby-womens-2",
+          name: "Corby Women's",
+          imagePath: "img/shoes/corby-womens-2-tan-white-orig.png",
+          price: 44.99,
+          quantity: 0,
+      },
     };
 
-    var cartItems = {
+    let cartItems = {
       "jameson-vulc": {
-        id: "jameson-vulc",
-        name: "Jameson Vulc",
-        price: 64.99,
-        imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
-        quantity: 1
+          id: "jameson-vulc",
+          name: "Jameson Vulc",
+          price: 64.99,
+          imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
+          quantity: 1,
       },
 
       "marana-x-hook-ups": {
-        id: "marana-x-hook-ups",
-        name: "Marana X Hook-Up",
-        price: 79.99,
-        imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
-        quantity: 2
+          id: "marana-x-hook-ups",
+          name: "Marana X Hook-Up",
+          price: 79.99,
+          imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
+          quantity: 2,
       },
 
       "scout-womens-6": {
-        id: "scout-womens-6",
-        name: "Scout Women's",
-        imagePath: "img/shoes/scout-womens-6-teal-orig.png",
-        price: 59.99,
-        quantity: 2
+          id: "scout-womens-6",
+          name: "Scout Women's",
+          imagePath: "img/shoes/scout-womens-6-teal-orig.png",
+          price: 59.99,
+          quantity: 2,
       },
 
       "scout-womens-coco-ho-5": {
-        id: "scout-womens-coco-ho-5",
-        name: "Scout Women's Coco Ho",
-        imagePath: "img/shoes/scout-womens-coco-ho-5-olive-white-orig.png",
-        price: 59.99,
-        quantity: 1
+          id: "scout-womens-coco-ho-5",
+          name: "Scout Women's Coco Ho",
+          imagePath: "img/shoes/scout-womens-coco-ho-5-olive-white-orig.png",
+          price: 59.99,
+          quantity: 1,
       },
 
       "jameson-2-womens-8": {
-        id: "jameson-2-womens-8",
-        name: "Jameson 2 Women's",
-        imagePath: "img/shoes/jameson-2-womens-8-black-white-gum-orig.png",
-        price: 59.99,
-        quantity: 1
-      }
+          id: "jameson-2-womens-8",
+          name: "Jameson 2 Women's",
+          imagePath: "img/shoes/jameson-2-womens-8-black-white-gum-orig.png",
+          price: 59.99,
+          quantity: 1,
+      },
     };
-    return React.createElement(
-      "div",
-      { className: "site" },
-      this.renderBackground(),
-      React.createElement(
-        "div",
-        { className: "site__main" },
-        React.createElement(
-          "div",
-          { className: "site__left-sidebar" },
-          React.createElement(SiteTitle, null)
-        ),
-        React.createElement(
-          "div",
-          { className: "site__content" },
-          React.createElement(Products, { products: products, cartitems: cartItems })
-        )
-      ),
-      React.createElement(
-        "div",
-        { className: "site__right-sidebar" },
-        React.createElement(Cart, { cartitems: cartItems }),
-        React.createElement(Checkout, { cartitems: cartItems })
-      ),
-      React.createElement(Siderbar, null)
+    return (
+      <div className="site">
+        {this.renderBackground()}
+
+        <div className="site__main">
+          <div className="site__left-sidebar">
+            <SiteTitle/>
+          </div>
+
+          <div className="site__content">
+            <Products products={products} cartitems={cartItems}/>
+          </div>
+        </div>
+
+        <div className="site__right-sidebar">
+          <Cart cartitems={cartItems}/>
+          <Checkout cartitems={cartItems}/>
+        </div>
+        <Siderbar/>
+      </div>
     );
   }
 });
+*/
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _componentsApp = require('../components/App');
+
+var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
 window.onload = function () {
   // 使用 App 组件替换 `#root` 的 innerHTML。
-  React.render(React.createElement(App, null), document.querySelector("#root"));
+  _react2['default'].render(_react2['default'].createElement(_componentsApp2['default'], null), document.querySelector("#root"));
 };
