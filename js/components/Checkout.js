@@ -1,7 +1,12 @@
 import React, { PropTypes, Component } from 'react';
-import { cartItems } from '../data';
+
+const CartStore = require("../stores/CartStore");
 
 class Checkout extends Component {
+  componentDidMount() {
+    CartStore.addChangeListener(this.forceUpdate.bind(this));
+  }
+
   Checkoutcoupon() {
     return (
       <div>
@@ -12,14 +17,14 @@ class Checkout extends Component {
   }
 
   render() {
-    let cartitems = cartItems;
+    let cartitems = CartStore.getCartitems();
     let subtotal = 0;
     for(let key in cartitems) {
       if(cartitems.hasOwnProperty(key)) {
         subtotal += cartitems[key].price*cartitems[key].quantity;
       }
     }
-    subtotal = "$" + subtotal;
+    subtotal = "$" + subtotal.toFixed(2);
     return (
       <div>
         {this.Checkoutcoupon()}
@@ -30,11 +35,11 @@ class Checkout extends Component {
 
         <div className="checkout__line">
           <div className="checkout__line__label"> Subtotal</div>
-          <div className="checkout__line__amount checkout__line__amount--strikeout"> {subtotal} </div>
+          <div className="checkout__line__amount checkout__line__amount--omg-savings"> {subtotal} </div>
         </div>
 
         <div className="checkout__line">
-          <div className="checkout__line__amount checkout__line__amount--omg-savings"> $360 </div>
+          <div className="checkout__line__amount checkout__line__amount--strikeout"> $360 </div>
         </div>
 
         <a className="checkout__button">

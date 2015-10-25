@@ -1,8 +1,19 @@
 import React, { PropTypes, Component } from 'react';
+import QuantityControl from './QuantityControl';
+
+const CartStore = require("../stores/CartStore");
+const { removeCartItem } = CartStore;
 
 class Cartitem extends Component {
+  componentDidMount() {
+    CartStore.addChangeListener(this.forceUpdate.bind(this));
+  }
+  handleRemove() {
+    let productID = this.props.cartitem['id'];
+    removeCartItem(productID);
+  }
   render() {
-    let {name, price, imagePath, quantity} = this.props.cartitem;
+    let { id, name, price, imagePath, quantity } = this.props.cartitem;
     return (
       <div className="cart-item">
         <div className="cart-item__top-part">
@@ -17,16 +28,9 @@ class Cartitem extends Component {
               {quantity > 1 ? "$"+price+" x "+quantity : "$"+price }
             </div>
           </div>
-          <img className="cart-item__trash" src="img/trash-icon.svg"/>
+          <img onClick={this.handleRemove.bind(this)} className="cart-item__trash" src="img/trash-icon.svg"/>
         </div>
-
-        <div className="cart-item__qty">
-          <div className="adjust-qty">
-            <a className="adjust-qty__button">-</a>
-            <div className="adjust-qty__number">{quantity}</div>
-            <a className="adjust-qty__button">+</a>
-          </div>
-        </div>
+        <QuantityControl productid={id} quantity={quantity}/>
       </div>
     );
   }

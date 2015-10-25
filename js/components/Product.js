@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import QuantityControl from './QuantityControl';
 
 const CartStore = require("../stores/CartStore");
-const {addCartItem} = CartStore;
+const { addCartItem, updateCartItemQuantity } = CartStore;
 
 class Product extends Component {
   componentDidMount() {
@@ -24,7 +24,7 @@ class Product extends Component {
     }
 
     if(item > 0) {
-      return (<QuantityControl item={item} variant="gray"/>);
+      return (<QuantityControl productid={this.props.product.id} quantity={item} variant="gray"/>);
     } else {
       return (<a className="product__add" onClick={this.handleClick.bind(this)}><img className="product__add__icon" src="img/cart-icon.svg"/></a>);
     }

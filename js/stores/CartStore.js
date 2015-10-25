@@ -25,6 +25,20 @@ module.exports = {
     emitter.emit("change");
   },
 
+  removeCartItem(productID) {
+    delete _cartItems[productID];
+    emitter.emit("change");
+  },
+
+  updateCartItemQuantity(productId, quantity){
+    if(quantity > 0) {
+      _cartItems[productId]['quantity'] = quantity;
+    } else {
+      _cartItems[productId]['quantity'] = 1;
+    }
+    emitter.emit("change");
+  },
+
   addChangeListener(callback) {
     emitter.addListener("change",callback)
   },

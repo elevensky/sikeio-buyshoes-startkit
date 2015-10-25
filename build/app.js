@@ -19292,6 +19292,7 @@
 	
 	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 188);
 	var addCartItem = CartStore.addCartItem;
+	var updateCartItemQuantity = CartStore.updateCartItemQuantity;
 	
 	var Product = (function (_Component) {
 	  _inherits(Product, _Component);
@@ -19325,7 +19326,7 @@
 	      }
 	
 	      if (item > 0) {
-	        return _react2['default'].createElement(_QuantityControl2['default'], { item: item, variant: 'gray' });
+	        return _react2['default'].createElement(_QuantityControl2['default'], { productid: this.props.product.id, quantity: item, variant: 'gray' });
 	      } else {
 	        return _react2['default'].createElement(
 	          'a',
@@ -19408,6 +19409,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 188);
+	var updateCartItemQuantity = CartStore.updateCartItemQuantity;
+	
 	var QuantityControl = (function (_Component) {
 	  _inherits(QuantityControl, _Component);
 	
@@ -19418,16 +19422,28 @@
 	  }
 	
 	  _createClass(QuantityControl, [{
+	    key: "addClick",
+	    value: function addClick() {
+	      var quantity = parseInt(this.props.quantity);
+	      updateCartItemQuantity(this.props.productid, this.props.quantity + 1);
+	    }
+	  }, {
+	    key: "decsClick",
+	    value: function decsClick() {
+	      var quantity = parseInt(this.props.quantity);
+	      updateCartItemQuantity(this.props.productid, this.props.quantity - 1);
+	    }
+	  }, {
 	    key: "render",
 	    value: function render() {
-	      var quantity = this.props.item;
+	      var quantity = this.props.quantity;
 	      var variant = this.props.variant;
 	      return _react2["default"].createElement(
 	        "div",
 	        { className: "adjust-qty adjust-qty--" + variant },
 	        _react2["default"].createElement(
 	          "a",
-	          { className: "adjust-qty__button" },
+	          { onClick: this.decsClick.bind(this), className: "adjust-qty__button" },
 	          "-"
 	        ),
 	        _react2["default"].createElement(
@@ -19437,7 +19453,7 @@
 	        ),
 	        _react2["default"].createElement(
 	          "a",
-	          { className: "adjust-qty__button" },
+	          { onClick: this.addClick.bind(this), className: "adjust-qty__button" },
 	          "+"
 	        )
 	      );
@@ -21311,25 +21327,32 @@
   \***********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _QuantityControl = __webpack_require__(/*! ./QuantityControl */ 161);
+	
+	var _QuantityControl2 = _interopRequireDefault(_QuantityControl);
+	
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 188);
+	var removeCartItem = CartStore.removeCartItem;
 	
 	var Cartitem = (function (_Component) {
 	  _inherits(Cartitem, _Component);
@@ -21337,68 +21360,58 @@
 	  function Cartitem() {
 	    _classCallCheck(this, Cartitem);
 	
-	    _get(Object.getPrototypeOf(Cartitem.prototype), "constructor", this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Cartitem.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
 	  _createClass(Cartitem, [{
-	    key: "render",
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      CartStore.addChangeListener(this.forceUpdate.bind(this));
+	    }
+	  }, {
+	    key: 'handleRemove',
+	    value: function handleRemove() {
+	      var productID = this.props.cartitem['id'];
+	      removeCartItem(productID);
+	    }
+	  }, {
+	    key: 'render',
 	    value: function render() {
 	      var _props$cartitem = this.props.cartitem;
+	      var id = _props$cartitem.id;
 	      var name = _props$cartitem.name;
 	      var price = _props$cartitem.price;
 	      var imagePath = _props$cartitem.imagePath;
 	      var quantity = _props$cartitem.quantity;
 	
-	      return _react2["default"].createElement(
-	        "div",
-	        { className: "cart-item" },
-	        _react2["default"].createElement(
-	          "div",
-	          { className: "cart-item__top-part" },
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "cart-item__image" },
-	            _react2["default"].createElement("img", { src: imagePath })
+	      return _react2['default'].createElement(
+	        'div',
+	        { className: 'cart-item' },
+	        _react2['default'].createElement(
+	          'div',
+	          { className: 'cart-item__top-part' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'cart-item__image' },
+	            _react2['default'].createElement('img', { src: imagePath })
 	          ),
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "cart-item__top-part__middle" },
-	            _react2["default"].createElement(
-	              "div",
-	              { className: "cart-item__title" },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'cart-item__top-part__middle' },
+	            _react2['default'].createElement(
+	              'div',
+	              { className: 'cart-item__title' },
 	              name
 	            ),
-	            _react2["default"].createElement(
-	              "div",
-	              { className: "cart-item__price" },
+	            _react2['default'].createElement(
+	              'div',
+	              { className: 'cart-item__price' },
 	              quantity > 1 ? "$" + price + " x " + quantity : "$" + price
 	            )
 	          ),
-	          _react2["default"].createElement("img", { className: "cart-item__trash", src: "img/trash-icon.svg" })
+	          _react2['default'].createElement('img', { onClick: this.handleRemove.bind(this), className: 'cart-item__trash', src: 'img/trash-icon.svg' })
 	        ),
-	        _react2["default"].createElement(
-	          "div",
-	          { className: "cart-item__qty" },
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "adjust-qty" },
-	            _react2["default"].createElement(
-	              "a",
-	              { className: "adjust-qty__button" },
-	              "-"
-	            ),
-	            _react2["default"].createElement(
-	              "div",
-	              { className: "adjust-qty__number" },
-	              quantity
-	            ),
-	            _react2["default"].createElement(
-	              "a",
-	              { className: "adjust-qty__button" },
-	              "+"
-	            )
-	          )
-	        )
+	        _react2['default'].createElement(_QuantityControl2['default'], { productid: id, quantity: quantity })
 	      );
 	    }
 	  }]);
@@ -21406,8 +21419,8 @@
 	  return Cartitem;
 	})(_react.Component);
 	
-	exports["default"] = Cartitem;
-	module.exports = exports["default"];
+	exports['default'] = Cartitem;
+	module.exports = exports['default'];
 
 /***/ },
 /* 186 */
@@ -21471,27 +21484,27 @@
   \***********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _data = __webpack_require__(/*! ../data */ 162);
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 188);
 	
 	var Checkout = (function (_Component) {
 	  _inherits(Checkout, _Component);
@@ -21499,81 +21512,86 @@
 	  function Checkout() {
 	    _classCallCheck(this, Checkout);
 	
-	    _get(Object.getPrototypeOf(Checkout.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Checkout.prototype), "constructor", this).apply(this, arguments);
 	  }
 	
 	  _createClass(Checkout, [{
-	    key: 'Checkoutcoupon',
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      CartStore.addChangeListener(this.forceUpdate.bind(this));
+	    }
+	  }, {
+	    key: "Checkoutcoupon",
 	    value: function Checkoutcoupon() {
-	      return _react2['default'].createElement(
-	        'div',
+	      return _react2["default"].createElement(
+	        "div",
 	        null,
-	        _react2['default'].createElement('hr', { className: 'checkout__divider' }),
-	        _react2['default'].createElement('input', { type: 'text', className: 'checkout__coupon-input', placeholder: 'coupon code' })
+	        _react2["default"].createElement("hr", { className: "checkout__divider" }),
+	        _react2["default"].createElement("input", { type: "text", className: "checkout__coupon-input", placeholder: "coupon code" })
 	      );
 	    }
 	  }, {
-	    key: 'render',
+	    key: "render",
 	    value: function render() {
-	      var cartitems = _data.cartItems;
+	      var cartitems = CartStore.getCartitems();
 	      var subtotal = 0;
 	      for (var key in cartitems) {
 	        if (cartitems.hasOwnProperty(key)) {
 	          subtotal += cartitems[key].price * cartitems[key].quantity;
 	        }
 	      }
-	      subtotal = "$" + subtotal;
-	      return _react2['default'].createElement(
-	        'div',
+	      subtotal = "$" + subtotal.toFixed(2);
+	      return _react2["default"].createElement(
+	        "div",
 	        null,
 	        this.Checkoutcoupon(),
-	        _react2['default'].createElement(
-	          'div',
-	          { className: 'checkout__line' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'checkout__line__label' },
-	            ' Discount '
+	        _react2["default"].createElement(
+	          "div",
+	          { className: "checkout__line" },
+	          _react2["default"].createElement(
+	            "div",
+	            { className: "checkout__line__label" },
+	            " Discount "
 	          ),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'checkout__line__amount' },
-	            ' -$90 '
+	          _react2["default"].createElement(
+	            "div",
+	            { className: "checkout__line__amount" },
+	            " -$90 "
 	          )
 	        ),
-	        _react2['default'].createElement(
-	          'div',
-	          { className: 'checkout__line' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'checkout__line__label' },
-	            ' Subtotal'
+	        _react2["default"].createElement(
+	          "div",
+	          { className: "checkout__line" },
+	          _react2["default"].createElement(
+	            "div",
+	            { className: "checkout__line__label" },
+	            " Subtotal"
 	          ),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'checkout__line__amount checkout__line__amount--strikeout' },
-	            ' ',
+	          _react2["default"].createElement(
+	            "div",
+	            { className: "checkout__line__amount checkout__line__amount--omg-savings" },
+	            " ",
 	            subtotal,
-	            ' '
+	            " "
 	          )
 	        ),
-	        _react2['default'].createElement(
-	          'div',
-	          { className: 'checkout__line' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'checkout__line__amount checkout__line__amount--omg-savings' },
-	            ' $360 '
+	        _react2["default"].createElement(
+	          "div",
+	          { className: "checkout__line" },
+	          _react2["default"].createElement(
+	            "div",
+	            { className: "checkout__line__amount checkout__line__amount--strikeout" },
+	            " $360 "
 	          )
 	        ),
-	        _react2['default'].createElement(
-	          'a',
-	          { className: 'checkout__button' },
-	          _react2['default'].createElement('img', { className: 'checkout__button__icon', src: 'img/cart-icon.svg' }),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'checkout__button__label' },
-	            'Checkout'
+	        _react2["default"].createElement(
+	          "a",
+	          { className: "checkout__button" },
+	          _react2["default"].createElement("img", { className: "checkout__button__icon", src: "img/cart-icon.svg" }),
+	          _react2["default"].createElement(
+	            "div",
+	            { className: "checkout__button__label" },
+	            "Checkout"
 	          )
 	        )
 	      );
@@ -21583,8 +21601,8 @@
 	  return Checkout;
 	})(_react.Component);
 	
-	exports['default'] = Checkout;
-	module.exports = exports['default'];
+	exports["default"] = Checkout;
+	module.exports = exports["default"];
 
 /***/ },
 /* 188 */
@@ -21619,6 +21637,20 @@
 	      _cartItems[product.id]['quantity'] = 1;
 	    }
 	
+	    emitter.emit("change");
+	  },
+	
+	  removeCartItem: function removeCartItem(productID) {
+	    delete _cartItems[productID];
+	    emitter.emit("change");
+	  },
+	
+	  updateCartItemQuantity: function updateCartItemQuantity(productId, quantity) {
+	    if (quantity > 0) {
+	      _cartItems[productId]['quantity'] = quantity;
+	    } else {
+	      _cartItems[productId]['quantity'] = 1;
+	    }
 	    emitter.emit("change");
 	  },
 	
