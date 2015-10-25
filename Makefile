@@ -6,7 +6,12 @@ css:
 .PHONY: js
 js:
 	mkdir -p build
-	webpack --watch js/app.jsx build/app.js --progress --module-bind --module-bind "jsx=babel" --module-bind "js=babel"
+	webpack --watch -d js/app.jsx build/app.js --progress --module-bind --module-bind "jsx=babel" --module-bind "js=babel"
+
+.PHONY: minjs
+minjs:
+	mkdir -p build
+	webpack --watch -p js/app.jsx bundle/app.js --progress --module-bind --module-bind "jsx=babel" --module-bind "js=babel"
 
 .PHONY: server
 server:

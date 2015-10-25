@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { cartItems } from '../js/data';
+import { cartItems } from '../data';
 
 class Checkout extends Component {
   Checkoutcoupon() {

@@ -365,7 +365,7 @@ let App = React.createClass({
 });
 */
 import React from 'react';
-import App from '../components/App';
+import App from './components/App';
 
 window.onload = () => {
   // 使用 App 组件替换 `#root` 的 innerHTML。

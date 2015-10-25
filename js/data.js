@@ -1,6 +1,6 @@
-export default {
+module.exports = {
   cartItems: {
-    "jameson-vulc": {
+    "jameson-vulc": {；、N
         id: "jameson-vulc",
         name: "Jameson Vulc",
         price: 64.99,

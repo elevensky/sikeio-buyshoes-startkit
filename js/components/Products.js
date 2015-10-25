@@ -1,20 +1,20 @@
 import React, { PropTypes, Component } from 'react';
 import Product from './Product';
-import {products, cartItems} from '../js/data';
+import {cartItems, products} from '../data';
 
 class Products extends Component {
   render() {
-    let products = products;
-    let cartItems = cartItems;
+    let Products = products;
+    let CartItems = cartItems;
     let productsList = [];
     for(let key in products) {
-      if(products.hasOwnProperty(key)) {
-        for(let ckey in cartItems) {
+      if(Products.hasOwnProperty(key)) {
+        for(let ckey in CartItems) {
           if(ckey === key) {
-            products[key].quantity = cartItems[ckey].quantity;
+            Products[key].quantity = CartItems[ckey].quantity;
           }
         }
-        productsList.push(<Product key={products[key].id} product={products[key]} item={products[key].quantity}/>);
+        productsList.push(<Product key={Products[key].id} product={Products[key]} item={Products[key].quantity}/>);
       }
     }
     return (
