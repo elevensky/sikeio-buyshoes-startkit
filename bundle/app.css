@@ -836,6 +836,8 @@ a {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  height:60px;
+  margin: 15px;
 }
 
 .adjust-qty__button {

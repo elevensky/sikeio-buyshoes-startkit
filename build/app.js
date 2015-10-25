@@ -19238,17 +19238,11 @@
 	  _createClass(Products, [{
 	    key: 'render',
 	    value: function render() {
-	      var Products = _data.products;
-	      var CartItems = _data.cartItems;
 	      var productsList = [];
+	
 	      for (var key in _data.products) {
-	        if (Products.hasOwnProperty(key)) {
-	          for (var ckey in CartItems) {
-	            if (ckey === key) {
-	              Products[key].quantity = CartItems[ckey].quantity;
-	            }
-	          }
-	          productsList.push(_react2['default'].createElement(_Product2['default'], { key: Products[key].id, product: Products[key], item: Products[key].quantity }));
+	        if (_data.products.hasOwnProperty(key)) {
+	          productsList.push(_react2['default'].createElement(_Product2['default'], { key: key, product: _data.products[key], item: _data.products[key].quantity }));
 	        }
 	      }
 	      return _react2['default'].createElement(
@@ -19296,6 +19290,9 @@
 	
 	var _QuantityControl2 = _interopRequireDefault(_QuantityControl);
 	
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 188);
+	var addCartItem = CartStore.addCartItem;
+	
 	var Product = (function (_Component) {
 	  _inherits(Product, _Component);
 	
@@ -19306,15 +19303,33 @@
 	  }
 	
 	  _createClass(Product, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      CartStore.addChangeListener(this.forceUpdate.bind(this));
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick(event) {
+	      var product = this.props.product;
+	      addCartItem(product);
+	    }
+	  }, {
 	    key: 'getcartnum',
 	    value: function getcartnum() {
-	      var item = this.props.item;
+	      var Cartitems = CartStore.getCartitems();
+	      var item = undefined;
+	      if (Cartitems[this.props.product['id']]) {
+	        item = Cartitems[this.props.product['id']]['quantity'];
+	      } else {
+	        item = 0;
+	      }
+	
 	      if (item > 0) {
 	        return _react2['default'].createElement(_QuantityControl2['default'], { item: item, variant: 'gray' });
 	      } else {
 	        return _react2['default'].createElement(
 	          'a',
-	          { className: 'product__add' },
+	          { className: 'product__add', onClick: this.handleClick.bind(this) },
 	          _react2['default'].createElement('img', { className: 'product__add__icon', src: 'img/cart-icon.svg' })
 	        );
 	      }
@@ -19322,6 +19337,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var key = this.props.key;
 	      var _props$product = this.props.product;
 	      var name = _props$product.name;
 	      var price = _props$product.price;
@@ -19329,7 +19345,7 @@
 	
 	      return _react2['default'].createElement(
 	        'div',
-	        { className: 'product' },
+	        { key: key, className: 'product' },
 	        _react2['default'].createElement(
 	          'div',
 	          { className: 'product__display' },
@@ -19444,54 +19460,14 @@
 	"use strict";
 	
 	module.exports = {
-	    cartItems: {
-	        "jameson-vulc": {
-	            id: "jameson-vulc",
-	            name: "Jameson Vulc",
-	            price: 64.99,
-	            imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
-	            quantity: 1
-	        },
-	
-	        "marana-x-hook-ups": {
-	            id: "marana-x-hook-ups",
-	            name: "Marana X Hook-Up",
-	            price: 79.99,
-	            imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
-	            quantity: 2
-	        },
-	
-	        "scout-womens-6": {
-	            id: "scout-womens-6",
-	            name: "Scout Women's",
-	            imagePath: "img/shoes/scout-womens-6-teal-orig.png",
-	            price: 59.99,
-	            quantity: 2
-	        },
-	
-	        "scout-womens-coco-ho-5": {
-	            id: "scout-womens-coco-ho-5",
-	            name: "Scout Women's Coco Ho",
-	            imagePath: "img/shoes/scout-womens-coco-ho-5-olive-white-orig.png",
-	            price: 59.99,
-	            quantity: 1
-	        },
-	
-	        "jameson-2-womens-8": {
-	            id: "jameson-2-womens-8",
-	            name: "Jameson 2 Women's",
-	            imagePath: "img/shoes/jameson-2-womens-8-black-white-gum-orig.png",
-	            price: 59.99,
-	            quantity: 1
-	        }
-	    },
+	    cartItems: {},
 	    products: {
 	        "jameson-vulc": {
 	            id: "jameson-vulc",
 	            name: "Jameson Vulc",
 	            price: 64.99,
 	            imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
-	            quantity: 1
+	            quantity: 0
 	        },
 	
 	        "marana-x-hook-ups": {
@@ -19499,7 +19475,7 @@
 	            name: "Marana X Hook-Up",
 	            price: 79.99,
 	            imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
-	            quantity: 2
+	            quantity: 0
 	        },
 	
 	        "jameson-e-lite": {
@@ -19593,6 +19569,8 @@
 	
 	var _data = __webpack_require__(/*! ../data */ 162);
 	
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 188);
+	
 	var Cart = (function (_Component) {
 	  _inherits(Cart, _Component);
 	
@@ -19605,13 +19583,14 @@
 	  _createClass(Cart, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      CartStore.addChangeListener(this.forceUpdate.bind(this));
 	      var $content = _react2['default'].findDOMNode(this.refs.content);
 	      _perfectScrollbar2['default'].initialize($content);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var cartitems = _data.cartItems;
+	      var cartitems = CartStore.getCartitems();
 	      var cartList = [];
 	      for (var key in cartitems) {
 	        if (cartitems.hasOwnProperty(key)) {
@@ -21606,6 +21585,322 @@
 	
 	exports['default'] = Checkout;
 	module.exports = exports['default'];
+
+/***/ },
+/* 188 */
+/*!********************************!*\
+  !*** ./js/stores/CartStore.js ***!
+  \********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var EventEmitter = __webpack_require__(/*! events */ 189);
+	
+	var emitter = new EventEmitter();
+	
+	function emitChange() {
+	  emitter.emit("change");
+	}
+	
+	var _cartItems = {};
+	
+	module.exports = {
+	  // Reader methods
+	  getCartitems: function getCartitems() {
+	    return _cartItems;
+	  },
+	  // Writer methods. These are the "actions".
+	  addCartItem: function addCartItem(product) {
+	    if (_cartItems[product.id]) {
+	      _cartItems[product.id]['quantity']++;
+	    } else {
+	      _cartItems[product.id] = product;
+	      _cartItems[product.id]['quantity'] = 1;
+	    }
+	
+	    emitter.emit("change");
+	  },
+	
+	  addChangeListener: function addChangeListener(callback) {
+	    emitter.addListener("change", callback);
+	  },
+	
+	  removeChangeListener: function removeChangeListener(callback) {
+	    emitter.removeListener("change", callback);
+	  }
+	};
+
+/***/ },
+/* 189 */
+/*!********************************************************!*\
+  !*** (webpack)/~/node-libs-browser/~/events/events.js ***!
+  \********************************************************/
+/***/ function(module, exports) {
+
+	// Copyright Joyent, Inc. and other Node contributors.
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a
+	// copy of this software and associated documentation files (the
+	// "Software"), to deal in the Software without restriction, including
+	// without limitation the rights to use, copy, modify, merge, publish,
+	// distribute, sublicense, and/or sell copies of the Software, and to permit
+	// persons to whom the Software is furnished to do so, subject to the
+	// following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included
+	// in all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	// USE OR OTHER DEALINGS IN THE SOFTWARE.
+	
+	'use strict';
+	
+	function EventEmitter() {
+	  this._events = this._events || {};
+	  this._maxListeners = this._maxListeners || undefined;
+	}
+	module.exports = EventEmitter;
+	
+	// Backwards-compat with node 0.10.x
+	EventEmitter.EventEmitter = EventEmitter;
+	
+	EventEmitter.prototype._events = undefined;
+	EventEmitter.prototype._maxListeners = undefined;
+	
+	// By default EventEmitters will print a warning if more than 10 listeners are
+	// added to it. This is a useful default which helps finding memory leaks.
+	EventEmitter.defaultMaxListeners = 10;
+	
+	// Obviously not all Emitters should be limited to 10. This function allows
+	// that to be increased. Set to zero for unlimited.
+	EventEmitter.prototype.setMaxListeners = function (n) {
+	  if (!isNumber(n) || n < 0 || isNaN(n)) throw TypeError('n must be a positive number');
+	  this._maxListeners = n;
+	  return this;
+	};
+	
+	EventEmitter.prototype.emit = function (type) {
+	  var er, handler, len, args, i, listeners;
+	
+	  if (!this._events) this._events = {};
+	
+	  // If there is no 'error' event listener then throw.
+	  if (type === 'error') {
+	    if (!this._events.error || isObject(this._events.error) && !this._events.error.length) {
+	      er = arguments[1];
+	      if (er instanceof Error) {
+	        throw er; // Unhandled 'error' event
+	      }
+	      throw TypeError('Uncaught, unspecified "error" event.');
+	    }
+	  }
+	
+	  handler = this._events[type];
+	
+	  if (isUndefined(handler)) return false;
+	
+	  if (isFunction(handler)) {
+	    switch (arguments.length) {
+	      // fast cases
+	      case 1:
+	        handler.call(this);
+	        break;
+	      case 2:
+	        handler.call(this, arguments[1]);
+	        break;
+	      case 3:
+	        handler.call(this, arguments[1], arguments[2]);
+	        break;
+	      // slower
+	      default:
+	        args = Array.prototype.slice.call(arguments, 1);
+	        handler.apply(this, args);
+	    }
+	  } else if (isObject(handler)) {
+	    args = Array.prototype.slice.call(arguments, 1);
+	    listeners = handler.slice();
+	    len = listeners.length;
+	    for (i = 0; i < len; i++) listeners[i].apply(this, args);
+	  }
+	
+	  return true;
+	};
+	
+	EventEmitter.prototype.addListener = function (type, listener) {
+	  var m;
+	
+	  if (!isFunction(listener)) throw TypeError('listener must be a function');
+	
+	  if (!this._events) this._events = {};
+	
+	  // To avoid recursion in the case that type === "newListener"! Before
+	  // adding it to the listeners, first emit "newListener".
+	  if (this._events.newListener) this.emit('newListener', type, isFunction(listener.listener) ? listener.listener : listener);
+	
+	  if (!this._events[type])
+	    // Optimize the case of one listener. Don't need the extra array object.
+	    this._events[type] = listener;else if (isObject(this._events[type]))
+	    // If we've already got an array, just append.
+	    this._events[type].push(listener);else
+	    // Adding the second element, need to change to array.
+	    this._events[type] = [this._events[type], listener];
+	
+	  // Check for listener leak
+	  if (isObject(this._events[type]) && !this._events[type].warned) {
+	    if (!isUndefined(this._maxListeners)) {
+	      m = this._maxListeners;
+	    } else {
+	      m = EventEmitter.defaultMaxListeners;
+	    }
+	
+	    if (m && m > 0 && this._events[type].length > m) {
+	      this._events[type].warned = true;
+	      console.error('(node) warning: possible EventEmitter memory ' + 'leak detected. %d listeners added. ' + 'Use emitter.setMaxListeners() to increase limit.', this._events[type].length);
+	      if (typeof console.trace === 'function') {
+	        // not supported in IE 10
+	        console.trace();
+	      }
+	    }
+	  }
+	
+	  return this;
+	};
+	
+	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+	
+	EventEmitter.prototype.once = function (type, listener) {
+	  if (!isFunction(listener)) throw TypeError('listener must be a function');
+	
+	  var fired = false;
+	
+	  function g() {
+	    this.removeListener(type, g);
+	
+	    if (!fired) {
+	      fired = true;
+	      listener.apply(this, arguments);
+	    }
+	  }
+	
+	  g.listener = listener;
+	  this.on(type, g);
+	
+	  return this;
+	};
+	
+	// emits a 'removeListener' event iff the listener was removed
+	EventEmitter.prototype.removeListener = function (type, listener) {
+	  var list, position, length, i;
+	
+	  if (!isFunction(listener)) throw TypeError('listener must be a function');
+	
+	  if (!this._events || !this._events[type]) return this;
+	
+	  list = this._events[type];
+	  length = list.length;
+	  position = -1;
+	
+	  if (list === listener || isFunction(list.listener) && list.listener === listener) {
+	    delete this._events[type];
+	    if (this._events.removeListener) this.emit('removeListener', type, listener);
+	  } else if (isObject(list)) {
+	    for (i = length; i-- > 0;) {
+	      if (list[i] === listener || list[i].listener && list[i].listener === listener) {
+	        position = i;
+	        break;
+	      }
+	    }
+	
+	    if (position < 0) return this;
+	
+	    if (list.length === 1) {
+	      list.length = 0;
+	      delete this._events[type];
+	    } else {
+	      list.splice(position, 1);
+	    }
+	
+	    if (this._events.removeListener) this.emit('removeListener', type, listener);
+	  }
+	
+	  return this;
+	};
+	
+	EventEmitter.prototype.removeAllListeners = function (type) {
+	  var key, listeners;
+	
+	  if (!this._events) return this;
+	
+	  // not listening for removeListener, no need to emit
+	  if (!this._events.removeListener) {
+	    if (arguments.length === 0) this._events = {};else if (this._events[type]) delete this._events[type];
+	    return this;
+	  }
+	
+	  // emit removeListener for all listeners on all events
+	  if (arguments.length === 0) {
+	    for (key in this._events) {
+	      if (key === 'removeListener') continue;
+	      this.removeAllListeners(key);
+	    }
+	    this.removeAllListeners('removeListener');
+	    this._events = {};
+	    return this;
+	  }
+	
+	  listeners = this._events[type];
+	
+	  if (isFunction(listeners)) {
+	    this.removeListener(type, listeners);
+	  } else if (listeners) {
+	    // LIFO order
+	    while (listeners.length) this.removeListener(type, listeners[listeners.length - 1]);
+	  }
+	  delete this._events[type];
+	
+	  return this;
+	};
+	
+	EventEmitter.prototype.listeners = function (type) {
+	  var ret;
+	  if (!this._events || !this._events[type]) ret = [];else if (isFunction(this._events[type])) ret = [this._events[type]];else ret = this._events[type].slice();
+	  return ret;
+	};
+	
+	EventEmitter.prototype.listenerCount = function (type) {
+	  if (this._events) {
+	    var evlistener = this._events[type];
+	
+	    if (isFunction(evlistener)) return 1;else if (evlistener) return evlistener.length;
+	  }
+	  return 0;
+	};
+	
+	EventEmitter.listenerCount = function (emitter, type) {
+	  return emitter.listenerCount(type);
+	};
+	
+	function isFunction(arg) {
+	  return typeof arg === 'function';
+	}
+	
+	function isNumber(arg) {
+	  return typeof arg === 'number';
+	}
+	
+	function isObject(arg) {
+	  return typeof arg === 'object' && arg !== null;
+	}
+	
+	function isUndefined(arg) {
+	  return arg === void 0;
+	}
 
 /***/ }
 /******/ ]);

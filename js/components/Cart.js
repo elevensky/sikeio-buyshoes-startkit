@@ -4,14 +4,17 @@ import CartItem from './CartItem';
 import CartTitle from './CartTitle';
 import { cartItems } from '../data';
 
+const CartStore = require("../stores/CartStore");
+
 class Cart extends Component {
   componentDidMount() {
+    CartStore.addChangeListener(this.forceUpdate.bind(this));
     let $content = React.findDOMNode(this.refs.content);
     Ps.initialize($content);
   }
 
   render() {
-    let cartitems = cartItems;
+    let cartitems = CartStore.getCartitems();
     let cartList = [];
     for(let key in cartitems) {
       if(cartitems.hasOwnProperty(key)) {

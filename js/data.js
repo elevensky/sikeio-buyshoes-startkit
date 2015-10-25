@@ -1,52 +1,12 @@
 module.exports = {
-  cartItems: {
-    "jameson-vulc": {；、N
-        id: "jameson-vulc",
-        name: "Jameson Vulc",
-        price: 64.99,
-        imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
-        quantity: 1,
-    },
-
-    "marana-x-hook-ups": {
-        id: "marana-x-hook-ups",
-        name: "Marana X Hook-Up",
-        price: 79.99,
-        imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
-        quantity: 2,
-    },
-
-    "scout-womens-6": {
-        id: "scout-womens-6",
-        name: "Scout Women's",
-        imagePath: "img/shoes/scout-womens-6-teal-orig.png",
-        price: 59.99,
-        quantity: 2,
-    },
-
-    "scout-womens-coco-ho-5": {
-        id: "scout-womens-coco-ho-5",
-        name: "Scout Women's Coco Ho",
-        imagePath: "img/shoes/scout-womens-coco-ho-5-olive-white-orig.png",
-        price: 59.99,
-        quantity: 1,
-    },
-
-    "jameson-2-womens-8": {
-        id: "jameson-2-womens-8",
-        name: "Jameson 2 Women's",
-        imagePath: "img/shoes/jameson-2-womens-8-black-white-gum-orig.png",
-        price: 59.99,
-        quantity: 1,
-    },
-  },
+  cartItems: {},
   products: {
     "jameson-vulc": {
         id: "jameson-vulc",
         name: "Jameson Vulc",
         price: 64.99,
         imagePath: "img/shoes/jameson-vulc-brown-gum-orig.png",
-        quantity: 1,
+        quantity: 0,
     },
 
     "marana-x-hook-ups": {
@@ -54,7 +14,7 @@ module.exports = {
         name: "Marana X Hook-Up",
         price: 79.99,
         imagePath: "img/shoes/marana-x-hook-ups-black-orig.png",
-        quantity: 2
+        quantity: 0
     },
 
     "jameson-e-lite": {
