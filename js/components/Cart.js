@@ -2,23 +2,19 @@ import React, { PropTypes, Component } from 'react';
 import Ps from 'perfect-scrollbar';
 import CartItem from './CartItem';
 import CartTitle from './CartTitle';
-import { cartItems } from '../data';
-
-const CartStore = require("../stores/CartStore");
 
 class Cart extends Component {
   componentDidMount() {
-    CartStore.addChangeListener(this.forceUpdate.bind(this));
     let $content = React.findDOMNode(this.refs.content);
     Ps.initialize($content);
   }
 
   render() {
-    let cartitems = CartStore.getCartitems();
+    let {cartItems} = this.props;
     let cartList = [];
-    for(let key in cartitems) {
-      if(cartitems.hasOwnProperty(key)) {
-        cartList.push(<CartItem key={cartitems[key].id} cartitem={cartitems[key]}/>);
+    for(let key in cartItems) {
+      if(cartItems.hasOwnProperty(key)) {
+        cartList.push(<CartItem key={cartItems[key].id} cartitem={cartItems[key]}/>);
       }
     }
     return (

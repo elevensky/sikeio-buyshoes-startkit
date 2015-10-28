@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import SiteTitle from './SiteTitle';
 import Products from './Products';
-import Cart from './Cart';
 import Checkout from './Checkout';
+import ConnectedCart from './ConnectedCart';
 
 class App extends Component {
   render() {
@@ -22,7 +22,7 @@ class App extends Component {
           </div>
         </div>
         <div className="site__right-sidebar">
-          <Cart/>
+          <ConnectedCart />
           <Checkout />
         </div>
         <a className="site__right-sidebar-toggle">

@@ -13,6 +13,9 @@ module.exports = {
   getCartitems() {
     return _cartItems;
   },
+  cartItems() {
+    return _cartItems;
+  },
   // Writer methods. These are the "actions".
   addCartItem(product) {
     if(_cartItems[product.id]){
