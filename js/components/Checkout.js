@@ -17,7 +17,7 @@ class Checkout extends Component {
   }
 
   render() {
-    let cartitems = CartStore.getCartitems();
+    let cartitems = CartStore.cartItems();
     let subtotal = 0;
     for(let key in cartitems) {
       if(cartitems.hasOwnProperty(key)) {

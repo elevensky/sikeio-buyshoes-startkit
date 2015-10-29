@@ -10,9 +10,6 @@ let _cartItems = {};
 
 module.exports = {
   // Reader methods
-  getCartitems() {
-    return _cartItems;
-  },
   cartItems() {
     return _cartItems;
   },

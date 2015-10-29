@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import SiteTitle from './SiteTitle';
-import Products from './Products';
+import ConnectedProducts from './ConnectedProducts';
 import Checkout from './Checkout';
 import ConnectedCart from './ConnectedCart';
 
@@ -18,7 +18,7 @@ class App extends Component {
             <SiteTitle />
           </div>
           <div className="site__content">
-            <Products />
+            <ConnectedProducts />
           </div>
         </div>
         <div className="site__right-sidebar">
