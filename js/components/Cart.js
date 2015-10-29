@@ -2,6 +2,9 @@ import React, { PropTypes, Component } from 'react';
 import Ps from 'perfect-scrollbar';
 import CartItem from './CartItem';
 import CartTitle from './CartTitle';
+import MakeConnectedComponent from './MakeConnectedComponent';
+
+import CartStore from '../stores/CartStore';
 
 class Cart extends Component {
   componentDidMount() {
@@ -29,4 +32,4 @@ class Cart extends Component {
   }
 }
 
-export default Cart;
+export default  MakeConnectedComponent(Cart, CartStore,"cartItems");;

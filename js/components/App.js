@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import SiteTitle from './SiteTitle';
 import ConnectedProducts from './ConnectedProducts';
 import Checkout from './Checkout';
-import ConnectedCart from './ConnectedCart';
+import Cart from './Cart';
 
 class App extends Component {
   render() {
@@ -22,7 +22,7 @@ class App extends Component {
           </div>
         </div>
         <div className="site__right-sidebar">
-          <ConnectedCart />
+          <Cart />
           <Checkout />
         </div>
         <a className="site__right-sidebar-toggle">
