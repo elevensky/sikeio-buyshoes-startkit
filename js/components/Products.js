@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import QuantityControl from './QuantityControl';
 
-import CartStore, { addCartItem, updateCartItemQuantity } from '../stores/CartStore';
+import CartStore, { addCartItem } from '../stores/CartStore';
 import LikeStore from '../stores/LikeStore';
 
 class Product extends Component {
@@ -21,8 +21,7 @@ class Product extends Component {
   }
 
   getcartnum() {
-    let cartItems = CartStore.cartItems();
-    //let { cartItems } = this.props;
+    let { cartItems } = this.props;
     let item;
     if(cartItems[this.props.product['id']]) {
       item = cartItems[this.props.product['id']]['quantity'];
@@ -40,8 +39,8 @@ class Product extends Component {
   render() {
     let key = this.props.key;
     let { id, name, price, imagePath } = this.props.product;
-    let likeitems = LikeStore.likeItems();
-    let islike = likeitems.indexOf(id);
+    let { likeItems } = this.props;
+    let islike = likeItems.indexOf(id);
     return (
       <div key={key} className="product">
         <div className="product__display">
@@ -69,12 +68,12 @@ class Product extends Component {
 
 class Products extends Component {
   render() {
-    let { productItems, cartItems,likeItems } = this.props;
+    let { productItems, cartItems, likeItems } = this.props;
     let productsList = [];
 
     for(let key in productItems) {
       if(productItems.hasOwnProperty(key)) {
-        productsList.push(<Product key={key} product={productItems[key]} item={productItems[key].quantity}/>);
+        productsList.push(<Product key={key} cartItems={cartItems} likeItems={likeItems} product={productItems[key]} item={productItems[key].quantity}/>);
       }
     }
     return (
