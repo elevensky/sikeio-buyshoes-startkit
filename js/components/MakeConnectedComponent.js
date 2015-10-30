@@ -1,29 +1,22 @@
 import React from 'react';
+import ConnectedStore from './ConnectedStore';
 
 function MakeConnectedComponent(ViewComponent, store, ...propNames) {
 
   let Store = store
-  let props = propNames;
   // TODO: Define ConnectedViewComponent
-
-  let storeProps = {};
-  for(let key in Store) {
-    if(Store.hasOwnProperty(key)) {
-      if(props.indexOf(key) > -1) {
-        storeProps[key] = Store[key]();
-      }
-    }
-  }
 
   class ConnectedViewComponent extends React.Component {
     componentDidMount() {
-      Store.addChangeListener(this.forceUpdate.bind(this));
+      store.addChangeListener(this.forceUpdate.bind(this));
     }
     render() {
-    return (
-      <ViewComponent {...storeProps}/>
-    );
-  }
+      return (
+        <ConnectedStore store={Store} propNames={propNames}>
+          {props => <ViewComponent {...props} {...this.props}/>}
+        </ConnectedStore>
+      );
+    }
   }
   // Return the component
   return ConnectedViewComponent;

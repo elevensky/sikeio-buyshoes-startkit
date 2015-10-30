@@ -1,6 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import QuantityControl from './QuantityControl';
+import MakeConnectedComponent from './MakeConnectedComponent';
 
+import ProductStore from '../stores/ProductStore';
 import CartStore, { addCartItem } from '../stores/CartStore';
 import LikeStore from '../stores/LikeStore';
 
@@ -84,4 +86,5 @@ class Products extends Component {
   }
 }
 
-export default Products;
+//export default Products;
+module.exports = MakeConnectedComponent(MakeConnectedComponent(MakeConnectedComponent(Products, ProductStore, "productItems"), CartStore, "cartItems"),LikeStore,"likeItems");
