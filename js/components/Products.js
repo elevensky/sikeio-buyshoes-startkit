@@ -1,17 +1,13 @@
 import React, { PropTypes, Component } from 'react';
 import QuantityControl from './QuantityControl';
 import MakeConnectedComponent from './MakeConnectedComponent';
+import connect from './connect';
 
 import ProductStore from '../stores/ProductStore';
 import CartStore, { addCartItem } from '../stores/CartStore';
 import LikeStore from '../stores/LikeStore';
 
 class Product extends Component {
-  componentDidMount() {
-    CartStore.addChangeListener(this.forceUpdate.bind(this));
-    LikeStore.addChangeListener(this.forceUpdate.bind(this));
-  }
-
   handleClick(event) {
     let product = this.props.product;
     addCartItem(product);
@@ -70,10 +66,10 @@ class Product extends Component {
 
 class Products extends Component {
   render() {
-    let { productItems, cartItems, likeItems } = this.props;
+    let { productItems, filteredProducts, cartItems, likeItems } = this.props;
     let productsList = [];
 
-    for(let key in productItems) {
+    for(let key in filteredProducts) {
       if(productItems.hasOwnProperty(key)) {
         productsList.push(<Product key={key} cartItems={cartItems} likeItems={likeItems} product={productItems[key]} item={productItems[key].quantity}/>);
       }
@@ -87,4 +83,13 @@ class Products extends Component {
 }
 
 //export default Products;
-module.exports = MakeConnectedComponent(MakeConnectedComponent(MakeConnectedComponent(Products, ProductStore, "productItems"), CartStore, "cartItems"),LikeStore,"likeItems");
+//module.exports = MakeConnectedComponent(MakeConnectedComponent(MakeConnectedComponent(Products, ProductStore, "productItems"), CartStore, "cartItems"),LikeStore,"likeItems");
+/*
+JS Decorator实现方式
+*/
+@connect(ProductStore,"productItems","filteredProducts")
+@connect(CartStore,"cartItems")
+@connect(LikeStore,"likeItems")
+class ConnectedProducts extends Products {};
+
+module.exports = ConnectedProducts;
