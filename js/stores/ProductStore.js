@@ -1,3 +1,4 @@
+const LikeStore = require("./LikeStore");
 const EventEmitter = require("events");
 
 let emitter = new EventEmitter();
@@ -72,12 +73,34 @@ let _productItems = {
     },
   };
 
+let _showOnlyLike = false;
+
 module.exports = {
   // Reader methods
   productItems() {
     return _productItems;
   },
+  filteredProducts() {
+    // Return all products or only liked products, depending on _showOnlyLike
+    let likearr = LikeStore.likeItems();
+    let filterProducts = {};
+    if(_showOnlyLike) {
+        for(let key in _productItems)
+        if(likearr.indexOf(key) > -1) {
+          filterProducts[key] = _productItems[key];
+        }
+    } else {
+        filterProducts = _productItems;
+    }
+    return filterProducts;
+  },
 
+  // Actions
+  toggleShowOnlyLike() {
+    _showOnlyLike = !_showOnlyLike;
+    //重要的事情说三遍，action之后一定要emit事件。action之后一定要emit事件，action之后一定要emit事件。
+    emitter.emit("change");
+  },
   addChangeListener(callback) {
     emitter.addListener("change",callback)
   },
