@@ -17,8 +17,8 @@ export function updateCartItemQuantity(productId, quantity) {
 }
 
 export function undoShoppingCart() {
-  let carItems = UndoStore.lastHistoryItem();
-  dispatcher.emit({type: "undoShoppingCart", cartItems: cartItems})
+  let cartItems = UndoStore.lastHistoryItem();
+  dispatcher.dispatch({type: "undoShoppingCart", cartItems: cartItems})
 }
 
 export default dispatcher;

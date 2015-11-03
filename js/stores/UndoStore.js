@@ -1,6 +1,5 @@
 import dispatcher from './AppDispatcher';
 import CartStore from "./CartStore";
-import _ from 'lodash';
 const EventEmitter = require("events");
 
 let emitter = new EventEmitter();
@@ -10,7 +9,7 @@ function emitChange() {
 }
 
 function undoShoppingCart(action) {
-  CartStore.setCartItems(action.cartItems);
+  CartStore.setCartItems(action);
   emitChange();
 }
 

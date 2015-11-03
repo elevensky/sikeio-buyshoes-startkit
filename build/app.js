@@ -19973,8 +19973,8 @@
 	}
 	
 	function undoShoppingCart() {
-	  var carItems = _UndoStore2['default'].lastHistoryItem();
-	  _AppDispatcher2['default'].emit({ type: "undoShoppingCart", cartItems: cartItems });
+	  var cartItems = _UndoStore2['default'].lastHistoryItem();
+	  _AppDispatcher2['default'].dispatch({ type: "undoShoppingCart", cartItems: cartItems });
 	}
 	
 	exports['default'] = _AppDispatcher2['default'];
@@ -20015,9 +20015,7 @@
 	var _require = __webpack_require__(/*! flux */ 166);
 	
 	var Dispatcher = _require.Dispatcher;
-	
-	var dispatcher = new Dispatcher();
-	exports["default"] = dispatcher;
+	exports["default"] = new Dispatcher();
 	module.exports = exports["default"];
 
 /***/ },
@@ -20567,6 +20565,10 @@
 	
 	var _events2 = _interopRequireDefault(_events);
 	
+	var _lodash = __webpack_require__(/*! lodash */ 175);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
 	var emitter = new _events2["default"]();
 	
 	function emitChange() {
@@ -20578,7 +20580,7 @@
 	var handlers = {
 	  // Writer methods. These are the "actions".
 	  addCartItem: function addCartItem(action) {
-	    _UndoStore2["default"].sethistoryItems(_.cloneDeep(_cartItems));
+	    _UndoStore2["default"].sethistoryItems(_lodash2["default"].cloneDeep(_cartItems));
 	    if (_cartItems[action.product.id]) {
 	      _cartItems[action.product.id]['quantity']++;
 	    } else {
@@ -20590,7 +20592,7 @@
 	  },
 	
 	  removeCartItem: function removeCartItem(action) {
-	    _UndoStore2["default"].sethistoryItems(_.cloneDeep(_cartItems));
+	    _UndoStore2["default"].sethistoryItems(_lodash2["default"].cloneDeep(_cartItems));
 	    delete _cartItems[action.productId];
 	
 	    emitChange();
@@ -20616,8 +20618,10 @@
 	  cartItems: function cartItems() {
 	    return _cartItems;
 	  },
-	  setCartItems: function setCartItems(cartItems) {
-	    return _cartItems = cartItems;
+	
+	  setCartItems: function setCartItems(action) {
+	    _cartItems = action.cartItems;
+	    emitChange();
 	  },
 	  // Reader methods
 	  addChangeListener: function addChangeListener(callback) {
@@ -20637,13 +20641,13 @@
   \********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
 	var _AppDispatcher = __webpack_require__(/*! ./AppDispatcher */ 165);
 	
@@ -20652,10 +20656,6 @@
 	var _CartStore = __webpack_require__(/*! ./CartStore */ 173);
 	
 	var _CartStore2 = _interopRequireDefault(_CartStore);
-	
-	var _lodash = __webpack_require__(/*! lodash */ 175);
-	
-	var _lodash2 = _interopRequireDefault(_lodash);
 	
 	var EventEmitter = __webpack_require__(/*! events */ 161);
 	
@@ -20666,17 +20666,17 @@
 	}
 	
 	function undoShoppingCart(action) {
-	  _CartStore2['default'].setCartItems(action.cartItems);
+	  _CartStore2["default"].setCartItems(action);
 	  emitChange();
 	}
 	
-	_AppDispatcher2['default'].register(function (action) {
+	_AppDispatcher2["default"].register(function (action) {
 	  if (action.type === 'undoShoppingCart') {
 	    undoShoppingCart(action);
 	  }
 	});
 	
-	exports['default'] = {
+	exports["default"] = {
 	  gethistoryItems: function gethistoryItems() {
 	    return _history;
 	  },
@@ -20697,7 +20697,7 @@
 	    emitter.removeListener("change", callback);
 	  }
 	};
-	module.exports = exports['default'];
+	module.exports = exports["default"];
 
 /***/ },
 /* 175 */

@@ -19,5 +19,4 @@ class Dispatcher {
 }
 */
 const {Dispatcher} = require("flux");
-const dispatcher = new Dispatcher();
-export default dispatcher;
+export default new Dispatcher();

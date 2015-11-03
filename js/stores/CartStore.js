@@ -1,6 +1,7 @@
 import dispatcher from './AppDispatcher';
 import UndoStore from "./UndoStore";
 import EventEmitter from "events";
+import _ from 'lodash';
 
 let emitter = new EventEmitter();
 
@@ -51,8 +52,10 @@ export default {
   cartItems() {
     return _cartItems;
   },
-  setCartItems(cartItems) {
-    return _cartItems = cartItems;
+
+  setCartItems(action) {
+    _cartItems = action.cartItems;
+    emitChange();
   },
   // Reader methods
   addChangeListener(callback) {
