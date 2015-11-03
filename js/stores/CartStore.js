@@ -1,4 +1,6 @@
-const EventEmitter = require("events");
+import dispatcher from './AppDispatcher';
+import UndoStore from "./UndoStore";
+import EventEmitter from "events";
 
 let emitter = new EventEmitter();
 
@@ -8,37 +10,49 @@ function emitChange() {
 
 let _cartItems = {};
 
-module.exports = {
-  // Reader methods
+let handlers = {
+  // Writer methods. These are the "actions".
+  addCartItem(action) {
+    if(_cartItems[action.product.id]){
+      _cartItems[action.product.id]['quantity']++;
+    } else {
+      _cartItems[action.product.id] = action.product;
+      _cartItems[action.product.id]['quantity'] = 1;
+    }
+    UndoStore.sethistoryItems(_.cloneDeep(_cartItems));
+    emitChange();
+  },
+
+  removeCartItem(action) {
+    delete _cartItems[action.productId];
+    UndoStore.sethistoryItems(_.cloneDeep(_cartItems));
+    emitChange();
+  },
+
+  updateCartItemQuantity(action) {
+    if(action.quantity > 0) {
+      _cartItems[action.productId]['quantity'] = action.quantity;
+    } else {
+      _cartItems[action.productId]['quantity'] = 1;
+    }
+    emitChange();
+  },
+}
+
+dispatcher.register((action) => {
+   let handler = handlers[action.type];
+    // Ignores the action if the store doesn't have a handler for it.
+    handler && handler(action);
+});
+
+export default {
   cartItems() {
     return _cartItems;
   },
-  // Writer methods. These are the "actions".
-  addCartItem(product) {
-    if(_cartItems[product.id]){
-      _cartItems[product.id]['quantity']++;
-    } else {
-      _cartItems[product.id] = product;
-      _cartItems[product.id]['quantity'] = 1;
-    }
-
-    emitter.emit("change");
+  setCartItems(cartItems) {
+    return _cartItems = cartItems;
   },
-
-  removeCartItem(productID) {
-    delete _cartItems[productID];
-    emitter.emit("change");
-  },
-
-  updateCartItemQuantity(productId, quantity){
-    if(quantity > 0) {
-      _cartItems[productId]['quantity'] = quantity;
-    } else {
-      _cartItems[productId]['quantity'] = 1;
-    }
-    emitter.emit("change");
-  },
-
+  // Reader methods
   addChangeListener(callback) {
     emitter.addListener("change",callback)
   },

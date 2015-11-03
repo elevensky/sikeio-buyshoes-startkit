@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 
-const CartStore = require("../stores/CartStore");
-const { updateCartItemQuantity } = CartStore;
+import { updateCartItemQuantity } from '../stores/actions';
 
 class QuantityControl extends Component {
   addClick() {

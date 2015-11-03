@@ -3,13 +3,19 @@ import Ps from 'perfect-scrollbar';
 import CartItem from './CartItem';
 import CartTitle from './CartTitle';
 import MakeConnectedComponent from './MakeConnectedComponent';
-
+import { undoShoppingCart } from '../stores/actions';
 import CartStore from '../stores/CartStore';
+import UndoStore from '../stores/UndoStore';
 
 class Cart extends Component {
   componentDidMount() {
+    UndoStore.addChangeListener(this.forceUpdate.bind(this));
     let $content = React.findDOMNode(this.refs.content);
     Ps.initialize($content);
+  }
+
+  undo() {
+    undoShoppingCart();
   }
 
   render() {
@@ -27,7 +33,8 @@ class Cart extends Component {
           <CartTitle isspacer='1'/>
           {cartList}
         </div>
-    </div>
+        <h3 className="cart__undo"><a onClick={this.undo.bind(this)}>undo</a></h3>
+      </div>
     );
   }
 }

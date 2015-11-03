@@ -3,8 +3,10 @@ import QuantityControl from './QuantityControl';
 import MakeConnectedComponent from './MakeConnectedComponent';
 import connect from './connect';
 
+import { addCartItem } from '../stores/actions';
+
 import ProductStore from '../stores/ProductStore';
-import CartStore, { addCartItem } from '../stores/CartStore';
+import CartStore from '../stores/CartStore';
 import LikeStore from '../stores/LikeStore';
 
 class Product extends Component {

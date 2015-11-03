@@ -1,16 +1,16 @@
 import React, { PropTypes, Component } from 'react';
 import QuantityControl from './QuantityControl';
 
-const CartStore = require("../stores/CartStore");
-const { removeCartItem } = CartStore;
+import CartStore from '../stores/CartStore';
+import { removeCartItem } from '../stores/actions';
 
 class Cartitem extends Component {
   componentDidMount() {
     CartStore.addChangeListener(this.forceUpdate.bind(this));
   }
   handleRemove() {
-    let productID = this.props.cartitem['id'];
-    removeCartItem(productID);
+    let productId = this.props.cartitem['id'];
+    removeCartItem(productId);
   }
   render() {
     let { id, name, price, imagePath, quantity } = this.props.cartitem;
