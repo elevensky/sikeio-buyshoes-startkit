@@ -13,19 +13,21 @@ let _cartItems = {};
 let handlers = {
   // Writer methods. These are the "actions".
   addCartItem(action) {
+    UndoStore.sethistoryItems(_.cloneDeep(_cartItems));
     if(_cartItems[action.product.id]){
       _cartItems[action.product.id]['quantity']++;
     } else {
       _cartItems[action.product.id] = action.product;
       _cartItems[action.product.id]['quantity'] = 1;
     }
-    UndoStore.sethistoryItems(_.cloneDeep(_cartItems));
+
     emitChange();
   },
 
   removeCartItem(action) {
-    delete _cartItems[action.productId];
     UndoStore.sethistoryItems(_.cloneDeep(_cartItems));
+    delete _cartItems[action.productId];
+
     emitChange();
   },
 
