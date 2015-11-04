@@ -12,7 +12,7 @@ class Product extends Component {
 
   likeItem(e) {
     let { id } = this.props.product;
-    LikeStore.addLikeItem(id);
+    LikeStore.toggleLike(id);
   }
 
   getcartnum() {
@@ -55,7 +55,7 @@ class Product extends Component {
           <img
             onClick={this.likeItem.bind(this)}
             className="product__heart"
-            src={this.props.isLiked ? "img/heart-liked.svg" : "img/heart.svg"}
+            src={this.props.isLike ? "img/heart-liked.svg" : "img/heart.svg"}
           />
         </div>
       </div>

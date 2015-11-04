@@ -97,6 +97,10 @@ module.exports = {
   },
 
   // Actions
+  toggleFilterLike() {
+    return _showOnlyLike;
+  },
+
   toggleShowOnlyLike() {
     _showOnlyLike = !_showOnlyLike;
     //重要的事情说三遍，action之后一定要emit事件。action之后一定要emit事件，action之后一定要emit事件。

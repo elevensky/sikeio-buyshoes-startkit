@@ -19164,6 +19164,12 @@
 	
 	var _storesProductStore = __webpack_require__(/*! ../stores/ProductStore */ 159);
 	
+	var _storesProductStore2 = _interopRequireDefault(_storesProductStore);
+	
+	var _connect = __webpack_require__(/*! ./connect */ 172);
+	
+	var _connect2 = _interopRequireDefault(_connect);
+	
 	var SiteTitle = (function (_Component) {
 	  _inherits(SiteTitle, _Component);
 	
@@ -19181,6 +19187,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var isFilterLike = this.props.toggleFilterLike;
 	      return _react2['default'].createElement(
 	        'div',
 	        { className: 'title' },
@@ -19189,7 +19196,11 @@
 	          null,
 	          'Buy Me Shoes'
 	        ),
-	        _react2['default'].createElement('img', { onClick: this.handleClick.bind(this), className: 'title__heart', src: 'img/heart.svg' })
+	        _react2['default'].createElement('img', {
+	          onClick: this.handleClick.bind(this),
+	          className: 'product__heart',
+	          src: isFilterLike ? "img/heart-liked.svg" : "img/heart.svg"
+	        })
 	      );
 	    }
 	  }]);
@@ -19197,7 +19208,23 @@
 	  return SiteTitle;
 	})(_react.Component);
 	
-	exports['default'] = SiteTitle;
+	var ConnectedSiteTitle = (function (_SiteTitle) {
+	  _inherits(ConnectedSiteTitle, _SiteTitle);
+	
+	  function ConnectedSiteTitle() {
+	    _classCallCheck(this, _ConnectedSiteTitle);
+	
+	    _get(Object.getPrototypeOf(_ConnectedSiteTitle.prototype), 'constructor', this).apply(this, arguments);
+	  }
+	
+	  var _ConnectedSiteTitle = ConnectedSiteTitle;
+	  ConnectedSiteTitle = (0, _connect2['default'])(_storesProductStore2['default'], 'toggleFilterLike')(ConnectedSiteTitle) || ConnectedSiteTitle;
+	  return ConnectedSiteTitle;
+	})(SiteTitle);
+	
+	;
+	
+	exports['default'] = ConnectedSiteTitle;
 	module.exports = exports['default'];
 
 /***/ },
@@ -19309,6 +19336,10 @@
 	    },
 	
 	    // Actions
+	    toggleFilterLike: function toggleFilterLike() {
+	        return _showOnlyLike;
+	    },
+	
 	    toggleShowOnlyLike: function toggleShowOnlyLike() {
 	        _showOnlyLike = !_showOnlyLike;
 	        //重要的事情说三遍，action之后一定要emit事件。action之后一定要emit事件，action之后一定要emit事件。
@@ -19344,23 +19375,20 @@
 	
 	module.exports = {
 	  // Reader methods
-	  getLikeitems: function getLikeitems() {
-	    return _likeItems;
-	  },
 	  likeItems: function likeItems() {
 	    return _likeItems;
 	  },
 	  // Writer methods. These are the "actions".
-	  addLikeItem: function addLikeItem(productID) {
-	    var index = _likeItems.indexOf(productID);
+	  toggleLike: function toggleLike(productId) {
+	    var index = _likeItems.indexOf(productId);
 	
 	    if (index > -1) {
 	      _likeItems.splice(index, 1);
 	    } else {
-	      _likeItems.push(productID);
+	      _likeItems.push(productId);
 	    }
 	
-	    emitter.emit("change");
+	    emitChange();
 	  },
 	
 	  addChangeListener: function addChangeListener(callback) {
@@ -19720,7 +19748,9 @@
 	      for (var key in filteredProducts) {
 	        if (filteredProducts.hasOwnProperty(key)) {
 	          var product = filteredProducts[key];
-	          var liked = typeof likeItems[key] !== 'undefined';
+	          //let liked = typeof likeItems[key] !== 'undefined';
+	          //liked声明为数组和对象判断方式不一致
+	          var liked = likeItems.indexOf(key) > -1 ? true : false;
 	          var inCart = typeof cartItems[key] !== 'undefined';
 	          productsList.push(_react2['default'].createElement(_Product2['default'], {
 	            key: key,
@@ -19753,7 +19783,7 @@
 	  var _ConnectedProducts = ConnectedProducts;
 	  ConnectedProducts = (0, _connect2['default'])(_storesLikeStore2['default'], "likeItems")(ConnectedProducts) || ConnectedProducts;
 	  ConnectedProducts = (0, _connect2['default'])(_storesCartStore2['default'], "cartItems")(ConnectedProducts) || ConnectedProducts;
-	  ConnectedProducts = (0, _connect2['default'])(_storesProductStore2['default'], "productItems", "filteredProducts")(ConnectedProducts) || ConnectedProducts;
+	  ConnectedProducts = (0, _connect2['default'])(_storesProductStore2['default'], "filteredProducts")(ConnectedProducts) || ConnectedProducts;
 	  return ConnectedProducts;
 	})(Products);
 	
@@ -29617,7 +29647,7 @@
 	    value: function likeItem(e) {
 	      var id = this.props.product.id;
 	
-	      _storesLikeStore2['default'].addLikeItem(id);
+	      _storesLikeStore2['default'].toggleLike(id);
 	    }
 	  }, {
 	    key: 'getcartnum',
@@ -29674,7 +29704,7 @@
 	          _react2['default'].createElement('img', {
 	            onClick: this.likeItem.bind(this),
 	            className: 'product__heart',
-	            src: this.props.isLiked ? "img/heart-liked.svg" : "img/heart.svg"
+	            src: this.props.isLike ? "img/heart-liked.svg" : "img/heart.svg"
 	          })
 	        )
 	      );

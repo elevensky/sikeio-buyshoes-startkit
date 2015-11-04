@@ -17,7 +17,9 @@ class Products extends Component {
     for(let key in filteredProducts) {
       if(filteredProducts.hasOwnProperty(key)) {
         let product = filteredProducts[key];
-        let liked = typeof likeItems[key] !== 'undefined';
+        //let liked = typeof likeItems[key] !== 'undefined';
+        //liked声明为数组和对象判断方式不一致
+        let liked = likeItems.indexOf(key) > -1 ? true : false ;
         let inCart = typeof cartItems[key] !== 'undefined';
         productsList.push(
           <Product
@@ -42,7 +44,7 @@ class Products extends Component {
 /*
 JS Decorator实现方式
 */
-@connect(ProductStore,"productItems","filteredProducts")
+@connect(ProductStore,"filteredProducts")
 @connect(CartStore,"cartItems")
 @connect(LikeStore,"likeItems")
 class ConnectedProducts extends Products {};

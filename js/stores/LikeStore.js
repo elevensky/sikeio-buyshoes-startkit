@@ -10,23 +10,20 @@ let _likeItems = [];
 
 module.exports = {
   // Reader methods
-  getLikeitems() {
-    return _likeItems;
-  },
   likeItems() {
     return _likeItems;
   },
   // Writer methods. These are the "actions".
-  addLikeItem(productID) {
-    let index = _likeItems.indexOf(productID);
+  toggleLike(productId) {
+    let index = _likeItems.indexOf(productId);
 
     if(index > -1) {
         _likeItems.splice(index, 1);
     } else {
-      _likeItems.push(productID);
+      _likeItems.push(productId);
     }
 
-    emitter.emit("change");
+    emitChange();
   },
 
   addChangeListener(callback) {

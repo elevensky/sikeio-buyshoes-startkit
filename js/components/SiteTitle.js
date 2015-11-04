@@ -1,18 +1,27 @@
 import React, { PropTypes, Component } from 'react';
-import { toggleShowOnlyLike } from '../stores/ProductStore';
+import ProductStore, { toggleShowOnlyLike } from '../stores/ProductStore';
+import connect from './connect';
 
 class SiteTitle extends Component {
   handleClick() {
     toggleShowOnlyLike();
   }
   render() {
+    let isFilterLike = this.props.toggleFilterLike;
     return (
       <div className="title">
         <h2>Buy Me Shoes</h2>
-        <img onClick={this.handleClick.bind(this)} className="title__heart" src="img/heart.svg"/>
+        <img
+          onClick={this.handleClick.bind(this)}
+          className="product__heart"
+          src={isFilterLike ? "img/heart-liked.svg" : "img/heart.svg"}
+        />
       </div>
     );
   }
 }
 
-export default SiteTitle;
+@connect(ProductStore, 'toggleFilterLike')
+class ConnectedSiteTitle extends SiteTitle {};
+
+export default ConnectedSiteTitle;
