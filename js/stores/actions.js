@@ -1,11 +1,10 @@
 import dispatcher from './AppDispatcher';
 import LoggingService from './LoggingService';
-import UndoStore from "./UndoStore";
 
 LoggingService();
 
-export function addCartItem(product) {
-  dispatcher.dispatch({type: "addCartItem", product: product});
+export function addCartItem(productId) {
+  dispatcher.dispatch({type: "addCartItem", productId: productId});
 }
 
 export function removeCartItem(productId) {
@@ -16,8 +15,7 @@ export function updateCartItemQuantity(productId, quantity) {
   dispatcher.dispatch({type: "updateCartItemQuantity", productId: productId, quantity: quantity});
 }
 
-export function undoShoppingCart() {
-  let cartItems = UndoStore.lastHistoryItem();
+export function undoShoppingCart(cartItems) {
   dispatcher.dispatch({type: "undoShoppingCart", cartItems: cartItems})
 }
 

@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import QuantityControl from './QuantityControl';
+import Product from './Product';
 import MakeConnectedComponent from './MakeConnectedComponent';
 import connect from './connect';
 
@@ -9,71 +9,24 @@ import ProductStore from '../stores/ProductStore';
 import CartStore from '../stores/CartStore';
 import LikeStore from '../stores/LikeStore';
 
-class Product extends Component {
-  handleClick(event) {
-    let product = this.props.product;
-    addCartItem(product);
-  }
-
-  likeIt(event) {
-    let { id } = this.props.product;
-    LikeStore.addLikeItem(id);
-  }
-
-  getcartnum() {
-    let { cartItems } = this.props;
-    let item;
-    if(cartItems[this.props.product['id']]) {
-      item = cartItems[this.props.product['id']]['quantity'];
-    } else {
-      item = 0;
-    }
-
-    if(item > 0) {
-      return (<QuantityControl productid={this.props.product.id} quantity={item} variant="gray"/>);
-    } else {
-      return (<a className="product__add" onClick={this.handleClick.bind(this)}><img className="product__add__icon" src="img/cart-icon.svg"/></a>);
-    }
-  }
-
-  render() {
-    let key = this.props.key;
-    let { id, name, price, imagePath } = this.props.product;
-    let { likeItems } = this.props;
-    let islike = likeItems.indexOf(id);
-    return (
-      <div key={key} className="product">
-        <div className="product__display">
-          <div className="product__price">
-            {"$"+price}
-          </div>
-
-          <div className="product__img-wrapper">
-            <img className="product__img" src={imagePath}/>
-          </div>
-
-          {this.getcartnum()}
-        </div>
-
-        <div className="product__description">
-          <div className="product__name">
-            {name}
-          </div>
-          <img onClick={this.likeIt.bind(this)} className="product__heart" src={islike > -1 ? "img/heart-liked.svg" : "img/heart.svg"}/>
-        </div>
-      </div>
-    );
-  }
-}
-
 class Products extends Component {
   render() {
-    let { productItems, filteredProducts, cartItems, likeItems } = this.props;
+    let { filteredProducts, cartItems, likeItems } = this.props;
     let productsList = [];
 
     for(let key in filteredProducts) {
-      if(productItems.hasOwnProperty(key)) {
-        productsList.push(<Product key={key} cartItems={cartItems} likeItems={likeItems} product={productItems[key]} item={productItems[key].quantity}/>);
+      if(filteredProducts.hasOwnProperty(key)) {
+        let product = filteredProducts[key];
+        let liked = typeof likeItems[key] !== 'undefined';
+        let inCart = typeof cartItems[key] !== 'undefined';
+        productsList.push(
+          <Product
+            key={key}
+            product={product}
+            isInCart={inCart}
+            isLike={liked}
+          />
+        );
       }
     }
     return (

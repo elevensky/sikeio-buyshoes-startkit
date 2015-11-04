@@ -1,6 +1,8 @@
 import React, { PropTypes, Component } from 'react';
+import connect from './connect';
 
-const CartStore = require("../stores/CartStore");
+import { productItems } from '../stores/ProductStore';
+import CartStore from '../stores/CartStore';
 
 class Checkout extends Component {
   componentDidMount() {
@@ -17,29 +19,22 @@ class Checkout extends Component {
   }
 
   render() {
-    let cartitems = CartStore.cartItems();
+    let { cartItems } = this.props;
+    let products = productItems();
     let subtotal = 0;
-    for(let key in cartitems) {
-      if(cartitems.hasOwnProperty(key)) {
-        subtotal += cartitems[key].price*cartitems[key].quantity;
+    for(let key in cartItems) {
+      if(cartItems.hasOwnProperty(key)) {
+        subtotal += products[key].price*cartItems[key].quantity;
       }
     }
     subtotal = "$" + subtotal.toFixed(2);
     return (
       <div>
         {this.Checkoutcoupon()}
-        <div className="checkout__line">
-          <div className="checkout__line__label"> Discount </div>
-          <div className="checkout__line__amount"> -$90 </div>
-        </div>
 
         <div className="checkout__line">
           <div className="checkout__line__label"> Subtotal</div>
           <div className="checkout__line__amount checkout__line__amount--omg-savings"> {subtotal} </div>
-        </div>
-
-        <div className="checkout__line">
-          <div className="checkout__line__amount checkout__line__amount--strikeout"> $360 </div>
         </div>
 
         <a className="checkout__button">
@@ -53,4 +48,7 @@ class Checkout extends Component {
   }
 }
 
-export default Checkout;
+@connect(CartStore, 'cartItems')
+class connectCheckout extends Checkout {};
+
+export default connectCheckout;

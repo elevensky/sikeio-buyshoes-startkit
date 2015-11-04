@@ -80,6 +80,7 @@ module.exports = {
   productItems() {
     return _productItems;
   },
+
   filteredProducts() {
     // Return all products or only liked products, depending on _showOnlyLike
     let likearr = LikeStore.likeItems();
@@ -99,7 +100,7 @@ module.exports = {
   toggleShowOnlyLike() {
     _showOnlyLike = !_showOnlyLike;
     //重要的事情说三遍，action之后一定要emit事件。action之后一定要emit事件，action之后一定要emit事件。
-    emitter.emit("change");
+    emitChange();
   },
   addChangeListener(callback) {
     emitter.addListener("change",callback)

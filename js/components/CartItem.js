@@ -1,19 +1,17 @@
 import React, { PropTypes, Component } from 'react';
 import QuantityControl from './QuantityControl';
+import { productItems } from '../stores/ProductStore';
 
-import CartStore from '../stores/CartStore';
 import { removeCartItem } from '../stores/actions';
 
-class Cartitem extends Component {
-  componentDidMount() {
-    CartStore.addChangeListener(this.forceUpdate.bind(this));
-  }
+class CartItem extends Component {
   handleRemove() {
-    let productId = this.props.cartitem['id'];
-    removeCartItem(productId);
+    removeCartItem(this.props.cartItem.id);
   }
   render() {
-    let { id, name, price, imagePath, quantity } = this.props.cartitem;
+    let { id, quantity } = this.props.cartItem;
+    let { name, price, imagePath } = productItems()[id];
+
     return (
       <div className="cart-item">
         <div className="cart-item__top-part">
@@ -25,15 +23,15 @@ class Cartitem extends Component {
               {name}
             </div>
             <div className="cart-item__price">
-              {quantity > 1 ? "$"+price+" x "+quantity : "$"+price }
+              {quantity > 1 ? "$"+price+" x "+quantity : "$"+price}
             </div>
           </div>
           <img onClick={this.handleRemove.bind(this)} className="cart-item__trash" src="img/trash-icon.svg"/>
         </div>
-        <QuantityControl productid={id} quantity={quantity}/>
+        <QuantityControl item={this.props.cartItem} />
       </div>
     );
   }
 }
 
-export default Cartitem;
+export default CartItem;

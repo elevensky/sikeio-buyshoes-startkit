@@ -9,21 +9,21 @@ import UndoStore from '../stores/UndoStore';
 
 class Cart extends Component {
   componentDidMount() {
-    UndoStore.addChangeListener(this.forceUpdate.bind(this));
     let $content = React.findDOMNode(this.refs.content);
     Ps.initialize($content);
   }
 
   undo() {
-    undoShoppingCart();
+    let cartItems = UndoStore.lastHistoryItems();
+    undoShoppingCart(cartItems);
   }
 
   render() {
-    let {cartItems} = this.props;
+    let { cartItems } = this.props;
     let cartList = [];
     for(let key in cartItems) {
       if(cartItems.hasOwnProperty(key)) {
-        cartList.push(<CartItem key={cartItems[key].id} cartitem={cartItems[key]}/>);
+        cartList.push(<CartItem key={key} cartItem={cartItems[key]}/>);
       }
     }
     return (
@@ -39,4 +39,4 @@ class Cart extends Component {
   }
 }
 
-export default  MakeConnectedComponent(Cart, CartStore,"cartItems");;
+export default MakeConnectedComponent(Cart, CartStore, "cartItems");

@@ -19291,6 +19291,7 @@
 	    productItems: function productItems() {
 	        return _productItems;
 	    },
+	
 	    filteredProducts: function filteredProducts() {
 	        // Return all products or only liked products, depending on _showOnlyLike
 	        var likearr = LikeStore.likeItems();
@@ -19311,7 +19312,7 @@
 	    toggleShowOnlyLike: function toggleShowOnlyLike() {
 	        _showOnlyLike = !_showOnlyLike;
 	        //重要的事情说三遍，action之后一定要emit事件。action之后一定要emit事件，action之后一定要emit事件。
-	        emitter.emit("change");
+	        emitChange();
 	    },
 	    addChangeListener: function addChangeListener(callback) {
 	        emitter.addListener("change", callback);
@@ -19665,9 +19666,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _QuantityControl = __webpack_require__(/*! ./QuantityControl */ 163);
+	var _Product = __webpack_require__(/*! ./Product */ 202);
 	
-	var _QuantityControl2 = _interopRequireDefault(_QuantityControl);
+	var _Product2 = _interopRequireDefault(_Product);
 	
 	var _MakeConnectedComponent = __webpack_require__(/*! ./MakeConnectedComponent */ 170);
 	
@@ -19691,99 +19692,8 @@
 	
 	var _storesLikeStore2 = _interopRequireDefault(_storesLikeStore);
 	
-	var Product = (function (_Component) {
-	  _inherits(Product, _Component);
-	
-	  function Product() {
-	    _classCallCheck(this, Product);
-	
-	    _get(Object.getPrototypeOf(Product.prototype), 'constructor', this).apply(this, arguments);
-	  }
-	
-	  _createClass(Product, [{
-	    key: 'handleClick',
-	    value: function handleClick(event) {
-	      var product = this.props.product;
-	      (0, _storesActions.addCartItem)(product);
-	    }
-	  }, {
-	    key: 'likeIt',
-	    value: function likeIt(event) {
-	      var id = this.props.product.id;
-	
-	      _storesLikeStore2['default'].addLikeItem(id);
-	    }
-	  }, {
-	    key: 'getcartnum',
-	    value: function getcartnum() {
-	      var cartItems = this.props.cartItems;
-	
-	      var item = undefined;
-	      if (cartItems[this.props.product['id']]) {
-	        item = cartItems[this.props.product['id']]['quantity'];
-	      } else {
-	        item = 0;
-	      }
-	
-	      if (item > 0) {
-	        return _react2['default'].createElement(_QuantityControl2['default'], { productid: this.props.product.id, quantity: item, variant: 'gray' });
-	      } else {
-	        return _react2['default'].createElement(
-	          'a',
-	          { className: 'product__add', onClick: this.handleClick.bind(this) },
-	          _react2['default'].createElement('img', { className: 'product__add__icon', src: 'img/cart-icon.svg' })
-	        );
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var key = this.props.key;
-	      var _props$product = this.props.product;
-	      var id = _props$product.id;
-	      var name = _props$product.name;
-	      var price = _props$product.price;
-	      var imagePath = _props$product.imagePath;
-	      var likeItems = this.props.likeItems;
-	
-	      var islike = likeItems.indexOf(id);
-	      return _react2['default'].createElement(
-	        'div',
-	        { key: key, className: 'product' },
-	        _react2['default'].createElement(
-	          'div',
-	          { className: 'product__display' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'product__price' },
-	            "$" + price
-	          ),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'product__img-wrapper' },
-	            _react2['default'].createElement('img', { className: 'product__img', src: imagePath })
-	          ),
-	          this.getcartnum()
-	        ),
-	        _react2['default'].createElement(
-	          'div',
-	          { className: 'product__description' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'product__name' },
-	            name
-	          ),
-	          _react2['default'].createElement('img', { onClick: this.likeIt.bind(this), className: 'product__heart', src: islike > -1 ? "img/heart-liked.svg" : "img/heart.svg" })
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return Product;
-	})(_react.Component);
-	
-	var Products = (function (_Component2) {
-	  _inherits(Products, _Component2);
+	var Products = (function (_Component) {
+	  _inherits(Products, _Component);
 	
 	  function Products() {
 	    _classCallCheck(this, Products);
@@ -19801,7 +19711,6 @@
 	    key: 'render',
 	    value: function render() {
 	      var _props = this.props;
-	      var productItems = _props.productItems;
 	      var filteredProducts = _props.filteredProducts;
 	      var cartItems = _props.cartItems;
 	      var likeItems = _props.likeItems;
@@ -19809,8 +19718,16 @@
 	      var productsList = [];
 	
 	      for (var key in filteredProducts) {
-	        if (productItems.hasOwnProperty(key)) {
-	          productsList.push(_react2['default'].createElement(Product, { key: key, cartItems: cartItems, likeItems: likeItems, product: productItems[key], item: productItems[key].quantity }));
+	        if (filteredProducts.hasOwnProperty(key)) {
+	          var product = filteredProducts[key];
+	          var liked = typeof likeItems[key] !== 'undefined';
+	          var inCart = typeof cartItems[key] !== 'undefined';
+	          productsList.push(_react2['default'].createElement(_Product2['default'], {
+	            key: key,
+	            product: product,
+	            isInCart: inCart,
+	            isLike: liked
+	          }));
 	        }
 	      }
 	      return _react2['default'].createElement(
@@ -19885,19 +19802,19 @@
 	  _createClass(QuantityControl, [{
 	    key: 'addClick',
 	    value: function addClick() {
-	      var quantity = parseInt(this.props.quantity);
-	      (0, _storesActions.updateCartItemQuantity)(this.props.productid, this.props.quantity + 1);
+	      var quantity = parseInt(this.props.item.quantity);
+	      (0, _storesActions.updateCartItemQuantity)(this.props.item.id, this.props.item.quantity + 1);
 	    }
 	  }, {
 	    key: 'decsClick',
 	    value: function decsClick() {
-	      var quantity = parseInt(this.props.quantity);
-	      (0, _storesActions.updateCartItemQuantity)(this.props.productid, this.props.quantity - 1);
+	      var quantity = parseInt(this.props.item.quantity);
+	      (0, _storesActions.updateCartItemQuantity)(this.props.item.id, this.props.item.quantity - 1);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var quantity = this.props.quantity;
+	      var quantity = this.props.item.quantity;
 	      var variant = this.props.variant;
 	      return _react2['default'].createElement(
 	        'div',
@@ -19954,14 +19871,10 @@
 	
 	var _LoggingService2 = _interopRequireDefault(_LoggingService);
 	
-	var _UndoStore = __webpack_require__(/*! ./UndoStore */ 174);
-	
-	var _UndoStore2 = _interopRequireDefault(_UndoStore);
-	
 	(0, _LoggingService2['default'])();
 	
-	function addCartItem(product) {
-	  _AppDispatcher2['default'].dispatch({ type: "addCartItem", product: product });
+	function addCartItem(productId) {
+	  _AppDispatcher2['default'].dispatch({ type: "addCartItem", productId: productId });
 	}
 	
 	function removeCartItem(productId) {
@@ -19972,8 +19885,7 @@
 	  _AppDispatcher2['default'].dispatch({ type: "updateCartItemQuantity", productId: productId, quantity: quantity });
 	}
 	
-	function undoShoppingCart() {
-	  var cartItems = _UndoStore2['default'].lastHistoryItem();
+	function undoShoppingCart(cartItems) {
 	  _AppDispatcher2['default'].dispatch({ type: "undoShoppingCart", cartItems: cartItems });
 	}
 	
@@ -20398,9 +20310,6 @@
 	    propNames[_key - 2] = arguments[_key];
 	  }
 	
-	  var Store = store;
-	  // TODO: Define ConnectedViewComponent
-	
 	  var ConnectedViewComponent = (function (_React$Component) {
 	    _inherits(ConnectedViewComponent, _React$Component);
 	
@@ -20424,9 +20333,9 @@
 	
 	        return _react2['default'].createElement(
 	          _ConnectedStore2['default'],
-	          { store: Store, propNames: propNames },
+	          { store: store, propNames: propNames },
 	          function (props) {
-	            return _react2['default'].createElement(ViewComponent, _extends({}, props, _this.props));
+	            return _react2['default'].createElement(ViewComponent, _extends({}, _this.props, props));
 	          }
 	        );
 	      }
@@ -20557,17 +20466,12 @@
 	
 	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
 	
-	var _UndoStore = __webpack_require__(/*! ./UndoStore */ 174);
-	
-	var _UndoStore2 = _interopRequireDefault(_UndoStore);
-	
 	var _events = __webpack_require__(/*! events */ 161);
 	
 	var _events2 = _interopRequireDefault(_events);
 	
-	var _lodash = __webpack_require__(/*! lodash */ 175);
-	
-	var _lodash2 = _interopRequireDefault(_lodash);
+	//**引入即报错
+	//import UndoStore from './UndoStore';
 	
 	var emitter = new _events2["default"]();
 	
@@ -20577,51 +20481,55 @@
 	
 	var _cartItems = {};
 	
+	_AppDispatcher2["default"].register(function (action) {
+	  //dispatcher.waitFor([tokenA]);
+	  var handler = handlers[action.type];
+	  // Ignores the action if the store doesn't have a handler for it.
+	  handler && handler(action);
+	});
+	
 	var handlers = {
 	  // Writer methods. These are the "actions".
 	  addCartItem: function addCartItem(action) {
-	    _UndoStore2["default"].sethistoryItems(_lodash2["default"].cloneDeep(_cartItems));
-	    if (_cartItems[action.product.id]) {
-	      _cartItems[action.product.id]['quantity']++;
-	    } else {
-	      _cartItems[action.product.id] = action.product;
-	      _cartItems[action.product.id]['quantity'] = 1;
-	    }
+	    var productId = action.productId;
+	
+	    _cartItems[productId] = {
+	      id: productId,
+	      quantity: 1
+	    };
 	
 	    emitChange();
 	  },
 	
 	  removeCartItem: function removeCartItem(action) {
-	    _UndoStore2["default"].sethistoryItems(_lodash2["default"].cloneDeep(_cartItems));
 	    delete _cartItems[action.productId];
 	
 	    emitChange();
 	  },
 	
 	  updateCartItemQuantity: function updateCartItemQuantity(action) {
-	    if (action.quantity > 0) {
-	      _cartItems[action.productId]['quantity'] = action.quantity;
-	    } else {
-	      _cartItems[action.productId]['quantity'] = 1;
-	    }
+	    var productId = action.productId;
+	    var quantity = action.quantity;
+	    var item = _cartItems[productId];
+	    if (!item || typeof quantity !== 'number') return;
+	
+	    item.quantity = quantity >= 1 ? quantity : 1;
+	
+	    emitChange();
+	  },
+	
+	  undoShoppingCart: function undoShoppingCart(action) {
+	    var cartItems = action.cartItems;
+	
+	    _cartItems = cartItems;
+	
 	    emitChange();
 	  }
 	};
 	
-	_AppDispatcher2["default"].register(function (action) {
-	  var handler = handlers[action.type];
-	  // Ignores the action if the store doesn't have a handler for it.
-	  handler && handler(action);
-	});
-	
 	exports["default"] = {
 	  cartItems: function cartItems() {
 	    return _cartItems;
-	  },
-	
-	  setCartItems: function setCartItems(action) {
-	    _cartItems = action.cartItems;
-	    emitChange();
 	  },
 	  // Reader methods
 	  addChangeListener: function addChangeListener(callback) {
@@ -20641,51 +20549,56 @@
   \********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	var _AppDispatcher = __webpack_require__(/*! ./AppDispatcher */ 165);
 	
 	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
 	
+	var _events = __webpack_require__(/*! events */ 161);
+	
+	var _events2 = _interopRequireDefault(_events);
+	
 	var _CartStore = __webpack_require__(/*! ./CartStore */ 173);
 	
-	var _CartStore2 = _interopRequireDefault(_CartStore);
+	var _lodash = __webpack_require__(/*! lodash */ 175);
 	
-	var EventEmitter = __webpack_require__(/*! events */ 161);
+	var _lodash2 = _interopRequireDefault(_lodash);
 	
-	var emitter = new EventEmitter();
+	var emitter = new _events2['default']();
 	var _history = [];
+	
 	function emitChange() {
 	  emitter.emit("change");
 	}
 	
-	function undoShoppingCart(action) {
-	  _CartStore2["default"].setCartItems(action);
-	  emitChange();
-	}
-	
-	_AppDispatcher2["default"].register(function (action) {
-	  if (action.type === 'undoShoppingCart') {
-	    undoShoppingCart(action);
-	  }
+	_AppDispatcher2['default'].register(function (action) {
+	  var handler = handlers[action.type];
+	  handler && handler(action);
 	});
 	
-	exports["default"] = {
-	  gethistoryItems: function gethistoryItems() {
-	    return _history;
+	var handlers = {
+	  addCartItem: function addCartItem(action) {
+	    _history.push(_lodash2['default'].cloneDeep((0, _CartStore.cartItems)()));
+	
+	    emitChange();
 	  },
 	
-	  sethistoryItems: function sethistoryItems(cartItems) {
-	    _history.push(cartItems);
-	  },
+	  removeCartItem: function removeCartItem(action) {
+	    _history.push(_lodash2['default'].cloneDeep((0, _CartStore.cartItems)()));
 	
-	  lastHistoryItem: function lastHistoryItem() {
+	    emitChange();
+	  }
+	};
+	
+	exports['default'] = {
+	  lastHistoryItems: function lastHistoryItems() {
 	    return _history.pop();
 	  },
 	  // Reader methods
@@ -20697,7 +20610,7 @@
 	    emitter.removeListener("change", callback);
 	  }
 	};
-	module.exports = exports["default"];
+	module.exports = exports['default'];
 
 /***/ },
 /* 175 */
@@ -27568,27 +27481,35 @@
   \***********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 173);
+	var _connect = __webpack_require__(/*! ./connect */ 172);
+	
+	var _connect2 = _interopRequireDefault(_connect);
+	
+	var _storesProductStore = __webpack_require__(/*! ../stores/ProductStore */ 159);
+	
+	var _storesCartStore = __webpack_require__(/*! ../stores/CartStore */ 173);
+	
+	var _storesCartStore2 = _interopRequireDefault(_storesCartStore);
 	
 	var Checkout = (function (_Component) {
 	  _inherits(Checkout, _Component);
@@ -27596,86 +27517,65 @@
 	  function Checkout() {
 	    _classCallCheck(this, Checkout);
 	
-	    _get(Object.getPrototypeOf(Checkout.prototype), "constructor", this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Checkout.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
 	  _createClass(Checkout, [{
-	    key: "componentDidMount",
+	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      CartStore.addChangeListener(this.forceUpdate.bind(this));
+	      _storesCartStore2['default'].addChangeListener(this.forceUpdate.bind(this));
 	    }
 	  }, {
-	    key: "Checkoutcoupon",
+	    key: 'Checkoutcoupon',
 	    value: function Checkoutcoupon() {
-	      return _react2["default"].createElement(
-	        "div",
+	      return _react2['default'].createElement(
+	        'div',
 	        null,
-	        _react2["default"].createElement("hr", { className: "checkout__divider" }),
-	        _react2["default"].createElement("input", { type: "text", className: "checkout__coupon-input", placeholder: "coupon code" })
+	        _react2['default'].createElement('hr', { className: 'checkout__divider' }),
+	        _react2['default'].createElement('input', { type: 'text', className: 'checkout__coupon-input', placeholder: 'coupon code' })
 	      );
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
-	      var cartitems = CartStore.cartItems();
+	      var cartItems = this.props.cartItems;
+	
+	      var products = (0, _storesProductStore.productItems)();
 	      var subtotal = 0;
-	      for (var key in cartitems) {
-	        if (cartitems.hasOwnProperty(key)) {
-	          subtotal += cartitems[key].price * cartitems[key].quantity;
+	      for (var key in cartItems) {
+	        if (cartItems.hasOwnProperty(key)) {
+	          subtotal += products[key].price * cartItems[key].quantity;
 	        }
 	      }
 	      subtotal = "$" + subtotal.toFixed(2);
-	      return _react2["default"].createElement(
-	        "div",
+	      return _react2['default'].createElement(
+	        'div',
 	        null,
 	        this.Checkoutcoupon(),
-	        _react2["default"].createElement(
-	          "div",
-	          { className: "checkout__line" },
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "checkout__line__label" },
-	            " Discount "
+	        _react2['default'].createElement(
+	          'div',
+	          { className: 'checkout__line' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'checkout__line__label' },
+	            ' Subtotal'
 	          ),
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "checkout__line__amount" },
-	            " -$90 "
-	          )
-	        ),
-	        _react2["default"].createElement(
-	          "div",
-	          { className: "checkout__line" },
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "checkout__line__label" },
-	            " Subtotal"
-	          ),
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "checkout__line__amount checkout__line__amount--omg-savings" },
-	            " ",
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'checkout__line__amount checkout__line__amount--omg-savings' },
+	            ' ',
 	            subtotal,
-	            " "
+	            ' '
 	          )
 	        ),
-	        _react2["default"].createElement(
-	          "div",
-	          { className: "checkout__line" },
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "checkout__line__amount checkout__line__amount--strikeout" },
-	            " $360 "
-	          )
-	        ),
-	        _react2["default"].createElement(
-	          "a",
-	          { className: "checkout__button" },
-	          _react2["default"].createElement("img", { className: "checkout__button__icon", src: "img/cart-icon.svg" }),
-	          _react2["default"].createElement(
-	            "div",
-	            { className: "checkout__button__label" },
-	            "Checkout"
+	        _react2['default'].createElement(
+	          'a',
+	          { className: 'checkout__button' },
+	          _react2['default'].createElement('img', { className: 'checkout__button__icon', src: 'img/cart-icon.svg' }),
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'checkout__button__label' },
+	            'Checkout'
 	          )
 	        )
 	      );
@@ -27685,8 +27585,24 @@
 	  return Checkout;
 	})(_react.Component);
 	
-	exports["default"] = Checkout;
-	module.exports = exports["default"];
+	var connectCheckout = (function (_Checkout) {
+	  _inherits(connectCheckout, _Checkout);
+	
+	  function connectCheckout() {
+	    _classCallCheck(this, _connectCheckout);
+	
+	    _get(Object.getPrototypeOf(_connectCheckout.prototype), 'constructor', this).apply(this, arguments);
+	  }
+	
+	  var _connectCheckout = connectCheckout;
+	  connectCheckout = (0, _connect2['default'])(_storesCartStore2['default'], 'cartItems')(connectCheckout) || connectCheckout;
+	  return connectCheckout;
+	})(Checkout);
+	
+	;
+	
+	exports['default'] = connectCheckout;
+	module.exports = exports['default'];
 
 /***/ },
 /* 178 */
@@ -27753,14 +27669,14 @@
 	  _createClass(Cart, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      _storesUndoStore2['default'].addChangeListener(this.forceUpdate.bind(this));
 	      var $content = _react2['default'].findDOMNode(this.refs.content);
 	      _perfectScrollbar2['default'].initialize($content);
 	    }
 	  }, {
 	    key: 'undo',
 	    value: function undo() {
-	      (0, _storesActions.undoShoppingCart)();
+	      var cartItems = _storesUndoStore2['default'].lastHistoryItems();
+	      (0, _storesActions.undoShoppingCart)(cartItems);
 	    }
 	  }, {
 	    key: 'render',
@@ -27770,7 +27686,7 @@
 	      var cartList = [];
 	      for (var key in cartItems) {
 	        if (cartItems.hasOwnProperty(key)) {
-	          cartList.push(_react2['default'].createElement(_CartItem2['default'], { key: cartItems[key].id, cartitem: cartItems[key] }));
+	          cartList.push(_react2['default'].createElement(_CartItem2['default'], { key: key, cartItem: cartItems[key] }));
 	        }
 	      }
 	      return _react2['default'].createElement(
@@ -27800,7 +27716,6 @@
 	})(_react.Component);
 	
 	exports['default'] = (0, _MakeConnectedComponent2['default'])(Cart, _storesCartStore2['default'], "cartItems");
-	;
 	module.exports = exports['default'];
 
 /***/ },
@@ -29521,41 +29436,34 @@
 	
 	var _QuantityControl2 = _interopRequireDefault(_QuantityControl);
 	
-	var _storesCartStore = __webpack_require__(/*! ../stores/CartStore */ 173);
-	
-	var _storesCartStore2 = _interopRequireDefault(_storesCartStore);
+	var _storesProductStore = __webpack_require__(/*! ../stores/ProductStore */ 159);
 	
 	var _storesActions = __webpack_require__(/*! ../stores/actions */ 164);
 	
-	var Cartitem = (function (_Component) {
-	  _inherits(Cartitem, _Component);
+	var CartItem = (function (_Component) {
+	  _inherits(CartItem, _Component);
 	
-	  function Cartitem() {
-	    _classCallCheck(this, Cartitem);
+	  function CartItem() {
+	    _classCallCheck(this, CartItem);
 	
-	    _get(Object.getPrototypeOf(Cartitem.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(CartItem.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
-	  _createClass(Cartitem, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      _storesCartStore2['default'].addChangeListener(this.forceUpdate.bind(this));
-	    }
-	  }, {
+	  _createClass(CartItem, [{
 	    key: 'handleRemove',
 	    value: function handleRemove() {
-	      var productId = this.props.cartitem['id'];
-	      (0, _storesActions.removeCartItem)(productId);
+	      (0, _storesActions.removeCartItem)(this.props.cartItem.id);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props$cartitem = this.props.cartitem;
-	      var id = _props$cartitem.id;
-	      var name = _props$cartitem.name;
-	      var price = _props$cartitem.price;
-	      var imagePath = _props$cartitem.imagePath;
-	      var quantity = _props$cartitem.quantity;
+	      var _props$cartItem = this.props.cartItem;
+	      var id = _props$cartItem.id;
+	      var quantity = _props$cartItem.quantity;
+	      var _productItems$id = (0, _storesProductStore.productItems)()[id];
+	      var name = _productItems$id.name;
+	      var price = _productItems$id.price;
+	      var imagePath = _productItems$id.imagePath;
 	
 	      return _react2['default'].createElement(
 	        'div',
@@ -29584,15 +29492,15 @@
 	          ),
 	          _react2['default'].createElement('img', { onClick: this.handleRemove.bind(this), className: 'cart-item__trash', src: 'img/trash-icon.svg' })
 	        ),
-	        _react2['default'].createElement(_QuantityControl2['default'], { productid: id, quantity: quantity })
+	        _react2['default'].createElement(_QuantityControl2['default'], { item: this.props.cartItem })
 	      );
 	    }
 	  }]);
 	
-	  return Cartitem;
+	  return CartItem;
 	})(_react.Component);
 	
-	exports['default'] = Cartitem;
+	exports['default'] = CartItem;
 	module.exports = exports['default'];
 
 /***/ },
@@ -29648,6 +29556,135 @@
 	})(_react.Component);
 	
 	exports['default'] = CartTitle;
+	module.exports = exports['default'];
+
+/***/ },
+/* 202 */
+/*!**********************************!*\
+  !*** ./js/components/Product.js ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _QuantityControl = __webpack_require__(/*! ./QuantityControl */ 163);
+	
+	var _QuantityControl2 = _interopRequireDefault(_QuantityControl);
+	
+	var _storesCartStore = __webpack_require__(/*! ../stores/CartStore */ 173);
+	
+	var _storesLikeStore = __webpack_require__(/*! ../stores/LikeStore */ 160);
+	
+	var _storesLikeStore2 = _interopRequireDefault(_storesLikeStore);
+	
+	var _storesActions = __webpack_require__(/*! ../stores/actions */ 164);
+	
+	var Product = (function (_Component) {
+	  _inherits(Product, _Component);
+	
+	  function Product() {
+	    _classCallCheck(this, Product);
+	
+	    _get(Object.getPrototypeOf(Product.prototype), 'constructor', this).apply(this, arguments);
+	  }
+	
+	  _createClass(Product, [{
+	    key: 'handleClick',
+	    value: function handleClick(e) {
+	      e.preventDefault();
+	      (0, _storesActions.addCartItem)(this.props.product.id);
+	    }
+	  }, {
+	    key: 'likeItem',
+	    value: function likeItem(e) {
+	      var id = this.props.product.id;
+	
+	      _storesLikeStore2['default'].addLikeItem(id);
+	    }
+	  }, {
+	    key: 'getcartnum',
+	    value: function getcartnum() {
+	      if (this.props.isInCart) {
+	        var product = (0, _storesCartStore.cartItems)()[this.props.product.id];
+	        return _react2['default'].createElement(_QuantityControl2['default'], { item: product, variant: 'gray' });
+	      } else {
+	        return _react2['default'].createElement(
+	          'a',
+	          {
+	            className: 'product__add',
+	            onClick: this.handleClick.bind(this)
+	          },
+	          _react2['default'].createElement('img', { className: 'product__add__icon', src: 'img/cart-icon.svg' })
+	        );
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var key = this.props.key;
+	      var _props$product = this.props.product;
+	      var name = _props$product.name;
+	      var price = _props$product.price;
+	      var imagePath = _props$product.imagePath;
+	
+	      return _react2['default'].createElement(
+	        'div',
+	        { className: 'product' },
+	        _react2['default'].createElement(
+	          'div',
+	          { className: 'product__display' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'product__price' },
+	            "$" + price
+	          ),
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'product__img-wrapper' },
+	            _react2['default'].createElement('img', { className: 'product__img', alt: name, src: imagePath })
+	          ),
+	          this.getcartnum()
+	        ),
+	        _react2['default'].createElement(
+	          'div',
+	          { className: 'product__description' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'product__name' },
+	            name
+	          ),
+	          _react2['default'].createElement('img', {
+	            onClick: this.likeItem.bind(this),
+	            className: 'product__heart',
+	            src: this.props.isLiked ? "img/heart-liked.svg" : "img/heart.svg"
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Product;
+	})(_react.Component);
+	
+	exports['default'] = Product;
 	module.exports = exports['default'];
 
 /***/ }

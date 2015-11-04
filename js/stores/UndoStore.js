@@ -1,34 +1,36 @@
 import dispatcher from './AppDispatcher';
-import CartStore from "./CartStore";
-const EventEmitter = require("events");
+import EventEmitter from 'events';
+import {cartItems} from './CartStore';
+import _ from 'lodash';
 
 let emitter = new EventEmitter();
 let _history = [];
+
 function emitChange() {
   emitter.emit("change");
 }
 
-function undoShoppingCart(action) {
-  CartStore.setCartItems(action);
-  emitChange();
-}
-
 dispatcher.register((action) => {
-   if(action.type === 'undoShoppingCart') {
-      undoShoppingCart(action);
-   }
+    let handler = handlers[action.type];
+    handler && handler(action);
 });
 
+let handlers = {
+  addCartItem(action) {
+      _history.push(_.cloneDeep(cartItems()));
+
+      emitChange();
+  },
+
+  removeCartItem(action) {
+      _history.push(_.cloneDeep(cartItems()));
+
+      emitChange();
+  }
+};
+
 export default {
-  gethistoryItems() {
-    return _history;
-  },
-
-  sethistoryItems(cartItems) {
-    _history.push(cartItems);
-  },
-
-  lastHistoryItem() {
+  lastHistoryItems() {
     return _history.pop();
   },
   // Reader methods

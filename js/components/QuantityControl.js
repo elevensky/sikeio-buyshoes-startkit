@@ -4,17 +4,17 @@ import { updateCartItemQuantity } from '../stores/actions';
 
 class QuantityControl extends Component {
   addClick() {
-    let quantity = parseInt(this.props.quantity);
-    updateCartItemQuantity(this.props.productid, this.props.quantity+1);
+    let quantity = parseInt(this.props.item.quantity);
+    updateCartItemQuantity(this.props.item.id, this.props.item.quantity+1);
   }
 
   decsClick() {
-    let quantity = parseInt(this.props.quantity);
-    updateCartItemQuantity(this.props.productid, this.props.quantity-1);
+    let quantity = parseInt(this.props.item.quantity);
+    updateCartItemQuantity(this.props.item.id, this.props.item.quantity-1);
   }
 
   render() {
-    let quantity = this.props.quantity;
+    let quantity = this.props.item.quantity;
     let variant = this.props.variant;
     return (
       <div className={"adjust-qty adjust-qty--"+variant}>
